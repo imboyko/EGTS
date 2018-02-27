@@ -1,0 +1,242 @@
+ECALL.EGTS_SR_TRACK_DATA (10 items, gap 5 items , 10 items) ... >>packet received:
+Protocol Version     PRV: 01h 
+Security Key ID     SKID: 00h 
+Prefix               PRF: 00h 
+Route                RTE: 0 
+Encryption Algorithm ENA: 00h 
+Compressed           CMP: 0
+Priority              PR: 0 
+Header Length         HL: 11 
+Header Encoding       HE: 00h 
+Frame Data Length    FDL: 315
+Packet Identifier    PID: 1
+Packet Type           PT: 0001h 
+Peer Address         PRA: - 
+Recipient Address    RCA: - 
+Time To Live         TTL: - 
+Header Check Sum     HCS: 06h 
+-------------------------
+ PT_APPDATA
+-------------------------
+RECORD:
+Record Length           RL: 308
+Record Number           RN: 1
+ * Source Service On Device           SSOD: 0
+ * Recipient Service On Device        RSOD: 0
+ * Group                               GRP: 0
+ * Record Processing Priority          RPP: 0
+ * Time Field Exists                  TMFE: 0
+ * Event ID Field  Exists             EVFE: 0
+ * Object ID  Field Exists            OBFE: 0
+Object Identifier      OID: -
+Event Identifier      EVID: -
+Time                    TM: -
+Source Service Type    SST: 10
+Recipient Service Type RST: 10
+SUBRECORD:
+SR_TRCAK_DATA:
+  Structures Amount    SA: 25
+  Absolute Time       ATM: 04.01.2010 11:20:00 (300000) (000493E0h)
+  TDS[1]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 5
+      LAT: 0 (00000000h)
+     LONG: 0 (00000000h)
+      SPD: 0
+      DIR: 100
+  TDS[2]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 6
+      LAT: 10000 (00002710h)
+     LONG: 10100 (00002774h)
+      SPD: 1000
+      DIR: 110
+  TDS[3]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 7
+      LAT: 20000 (00004E20h)
+     LONG: 20200 (00004EE8h)
+      SPD: 2000
+      DIR: 120
+  TDS[4]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 8
+      LAT: 30000 (00007530h)
+     LONG: 30300 (0000765Ch)
+      SPD: 3000
+      DIR: 130
+  TDS[5]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 9
+      LAT: 40000 (00009C40h)
+     LONG: 40400 (00009DD0h)
+      SPD: 4000
+      DIR: 140
+  TDS[6]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 10
+      LAT: 50000 (0000C350h)
+     LONG: 50500 (0000C544h)
+      SPD: 5000
+      DIR: 150
+  TDS[7]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 11
+      LAT: 60000 (0000EA60h)
+     LONG: 60600 (0000ECB8h)
+      SPD: 6000
+      DIR: 160
+  TDS[8]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 12
+      LAT: 70000 (00011170h)
+     LONG: 70700 (0001142Ch)
+      SPD: 7000
+      DIR: 170
+  TDS[9]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 13
+      LAT: 80000 (00013880h)
+     LONG: 80800 (00013BA0h)
+      SPD: 8000
+      DIR: 180
+  TDS[10]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 14
+      LAT: 90000 (00015F90h)
+     LONG: 90900 (00016314h)
+      SPD: 9000
+      DIR: 190
+  TDS[11]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 15
+      LAT: 100000 (000186A0h)
+     LONG: 101000 (00018A88h)
+      SPD: 10000
+      DIR: 200
+  TDS[12]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 16
+      LAT: 110000 (0001ADB0h)
+     LONG: 111100 (0001B1FCh)
+      SPD: 11000
+      DIR: 210
+  TDS[13]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 17
+      LAT: 120000 (0001D4C0h)
+     LONG: 121200 (0001D970h)
+      SPD: 12000
+      DIR: 220
+  TDS[14]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 18
+      LAT: 130000 (0001FBD0h)
+     LONG: 131300 (000200E4h)
+      SPD: 13000
+      DIR: 230
+  TDS[15]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 19
+      LAT: 140000 (000222E0h)
+     LONG: 141400 (00022858h)
+      SPD: 14000
+      DIR: 240
+  TDS[16]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 20
+      LAT: 150000 (000249F0h)
+     LONG: 151500 (00024FCCh)
+      SPD: 15000
+      DIR: 250
+  TDS[17]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 21
+      LAT: 160000 (00027100h)
+     LONG: 161600 (00027740h)
+      SPD: 16000
+      DIR: 260
+  TDS[18]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 22
+      LAT: 170000 (00029810h)
+     LONG: 171700 (00029EB4h)
+      SPD: 17000
+      DIR: 270
+  TDS[19]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 23
+      LAT: 180000 (0002BF20h)
+     LONG: 181800 (0002C628h)
+      SPD: 18000
+      DIR: 280
+  TDS[20]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 24
+      LAT: 190000 (0002E630h)
+     LONG: 191900 (0002ED9Ch)
+      SPD: 19000
+      DIR: 290
+  TDS[21]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 25
+      LAT: 200000 (00030D40h)
+     LONG: 202000 (00031510h)
+      SPD: 20000
+      DIR: 300
+  TDS[22]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 26
+      LAT: 210000 (00033450h)
+     LONG: 212100 (00033C84h)
+      SPD: 21000
+      DIR: 310
+  TDS[23]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 27
+      LAT: 220000 (00035B60h)
+     LONG: 222200 (000363F8h)
+      SPD: 22000
+      DIR: 320
+  TDS[24]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 28
+      LAT: 230000 (00038270h)
+     LONG: 232300 (00038B6Ch)
+      SPD: 23000
+      DIR: 330
+  TDS[25]: 
+     LOHS: 1
+     LAHS: 1
+      RTM: 29
+      LAT: 240000 (0003A980h)
+     LONG: 242400 (0003B2E0h)
+      SPD: 24000
+      DIR: 340
+>>
+
+PASSED

@@ -1,0 +1,52 @@
+ECALL.EGTS_SR_ACCEL_DATA (simple) ... >>packet received:
+Protocol Version     PRV: 01h 
+Security Key ID     SKID: 00h 
+Prefix               PRF: 00h 
+Route                RTE: 0 
+Encryption Algorithm ENA: 00h 
+Compressed           CMP: 0
+Priority              PR: 0 
+Header Length         HL: 11 
+Header Encoding       HE: 00h 
+Frame Data Length    FDL: 95
+Packet Identifier    PID: 1
+Packet Type           PT: 0001h 
+Peer Address         PRA: - 
+Recipient Address    RCA: - 
+Time To Live         TTL: - 
+Header Check Sum     HCS: BBh 
+-------------------------
+ PT_APPDATA
+-------------------------
+RECORD:
+Record Length           RL: 88
+Record Number           RN: 1
+ * Source Service On Device           SSOD: 0
+ * Recipient Service On Device        RSOD: 0
+ * Group                               GRP: 0
+ * Record Processing Priority          RPP: 0
+ * Time Field Exists                  TMFE: 0
+ * Event ID Field  Exists             EVFE: 0
+ * Object ID  Field Exists            OBFE: 0
+Object Identifier      OID: -
+Event Identifier      EVID: -
+Time                    TM: -
+Source Service Type    SST: 10
+Recipient Service Type RST: 10
+SUBRECORD:
+SR_ACCEL_DATA:
+  Structures Amount               SA: 10 (0Ah)
+  Absolute Time                   ATM: 05.06.2011 04:03:02  (44942582) (02ADC4F6h)
+  t:0, X:0, Y:0, Z:0
+  t:1, X:1, Y:1, Z:1
+  t:2, X:2, Y:2, Z:2
+  t:3, X:3, Y:3, Z:3
+  t:4, X:4, Y:4, Z:4
+  t:5, X:5, Y:5, Z:5
+  t:6, X:6, Y:6, Z:6
+  t:7, X:7, Y:7, Z:7
+  t:8, X:8, Y:8, Z:8
+  t:9, X:9, Y:9, Z:9
+>>
+
+PASSED

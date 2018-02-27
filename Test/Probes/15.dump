@@ -1,0 +1,56 @@
+COMMANDS.EGTS_SR_COMMAND_DATA (simple COM) ... >>packet received:
+Protocol Version     PRV: 01h 
+Security Key ID     SKID: 00h 
+Prefix               PRF: 00h 
+Route                RTE: 0 
+Encryption Algorithm ENA: 00h 
+Compressed           CMP: 0
+Priority              PR: 0 
+Header Length         HL: 11 
+Header Encoding       HE: 00h 
+Frame Data Length    FDL: 47
+Packet Identifier    PID: 1
+Packet Type           PT: 0001h 
+Peer Address         PRA: - 
+Recipient Address    RCA: - 
+Time To Live         TTL: - 
+Header Check Sum     HCS: FEh 
+-------------------------
+ PT_APPDATA
+-------------------------
+RECORD:
+Record Length           RL: 40
+Record Number           RN: 1
+ * Source Service On Device           SSOD: 0
+ * Recipient Service On Device        RSOD: 0
+ * Group                               GRP: 0
+ * Record Processing Priority          RPP: 0
+ * Time Field Exists                  TMFE: 0
+ * Event ID Field  Exists             EVFE: 0
+ * Object ID  Field Exists            OBFE: 0
+Object Identifier      OID: -
+Event Identifier      EVID: -
+Time                    TM: -
+Source Service Type    SST: 4
+Recipient Service Type RST: 4
+SUBRECORD:
+SR_COMMAND_DATA:
+  Command Type               CT: 5 (COM)
+  Command Confirmation Type  CCT: 0 (OK) (unexpected)
+  Command Identifier         CID: 1 (00000001h)
+  Source Identifier          SID: 1 (00000001h)
+  FLAGS: ACFE= 1, CHSFE= 1
+  Charset                    CHS: 0 (CP_1251)
+  Authorization Code Length  ACL: 10 (0Ah)
+  Authorization Code         AC:
+0123456789
+    COMMAND:
+    Address                   ADR: 12345 (3039h)
+    Size                       SZ: 1 
+    Action                    ACT: 0 (00h)
+    Command Code              CCD: 12345 (3039h)
+                               DT: size=10
+0123456789
+>>
+
+PASSED
