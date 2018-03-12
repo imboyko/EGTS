@@ -11,9 +11,9 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            byte[] rawData = File.ReadAllBytes("Probes\\16.bin");
+            byte[] rawData = File.ReadAllBytes("Probes\\sevas.bin");
 
-            EGTS.Packet packet = EGTS.Parser.ByteToPacket(rawData);
+            EGTS.Packet packet = EGTS.PacketBuilder.ByteToPacket(rawData);
             ushort length = (ushort)(packet.Header.HeaderLength - 1);
             byte crc8 = EGTS.Validator.Crc8(rawData, length);
 

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace EGTS.ServiceLayer
 {
     public class ServiceDataRecord : IGetByteArray
     {
         /// <summary>RL (Record Length)</summary>
-        public ushort RecordLength { get ; set; }
+        public ushort RecordLength { get; set; }
 
         /// <summary>RN (Record Number)</summary>
         public ushort RecordNumber { get; set; }
@@ -19,7 +20,21 @@ namespace EGTS.ServiceLayer
         public uint EventID { get; set; }
 
         /// <summary>TM (Time)</summary>
-        public uint Time { get; set; }
+        public uint TM { get; set; }
+
+        /// <summary>Time/summary>
+        public DateTime Time
+        {
+            get
+            {
+                return new DateTime(2010, 1, 1, 0, 0, 0).AddSeconds(TM);
+            }
+
+            set
+            {
+                TM = (uint)value.Subtract(new DateTime(2010, 1, 1, 0, 0, 0)).Seconds;
+            }
+        }
 
         /// <summary>SST (Source Service Type)</summary>
         public Services SourceService { get; set; }

@@ -1,24 +1,40 @@
 ﻿using System;
 using EGTS.TransportLayer;
 using EGTS.ServiceLayer;
+using EGTS.Parsers;
 
 namespace EGTS
 {
-    public static class Parser
+    public static class PacketBuilder
     {
         public static Packet ByteToPacket(byte[] data)
         {
-            Packet packet = new Packet()
-            {
-                Header = ParseHeader(data)
-            };
+            // Creating new Packet instance
+            Packet packet = new Packet();
+            packet.Header = ParseHeader(data);  // TODO: create an interface for header parser for use its instance
 
             int packetLength = packet.Header.HeaderLength + packet.Header.FrameDataLength;
-
             if (packetLength < data.Length)
             {
                 packet.CRC = BitConverter.ToUInt16(data, packetLength - 1);
             }
+
+            // Parsing service layer data
+            IServiceFrameParser serviceFrameParser = null;
+            switch (packet.Header.Type)
+            {
+                case PacketType.EGTS_PT_APPDATA:
+                    serviceFrameParser = new AppdataParser();
+                    break;
+                case PacketType.EGTS_PT_SIGNED_APPDATA:
+                    serviceFrameParser = new SignedAppdataParser();
+                    break;
+                case PacketType.EGTS_PT_RESPONSE:
+                    serviceFrameParser = new ResponseParser();
+                    break;
+            }
+
+            packet.ServiceFrameData = serviceFrameParser.Parse(data, packet.Header.HeaderLength, packet.Header.FrameDataLength);
 
             return packet;
         }
@@ -55,7 +71,7 @@ namespace EGTS
                     RecipientAddress = BitConverter.ToUInt16(data, 12), // bytes 12 to 13
                     TTL = data[14]
                 };
-    
+
 
                 header.CRC = data[15];
             }
