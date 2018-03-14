@@ -1,10 +1,14 @@
-﻿using EGTS.ServiceLayer;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace EGTS.TransportLayer
+namespace EGTS.ServiceLayer
 {
     public abstract class ServiceFrameData : IGetByteArray
     {
+        public ServiceFrameData()
+        {
+            ServiceDataRecords = new List<ServiceDataRecord>();
+        }
+
         /// <summary>SDR (Service Data Record)</summary>
         public List<ServiceDataRecord> ServiceDataRecords { get; set; }
 

@@ -3,7 +3,7 @@
     public class ServiceDataSubrecord : IGetByteArray
     {
         /// <summary>SRT (Subrecord Type)</summary>
-        public SubrecordTypes Type { get; set; }
+        public SubrecordType Type { get; set; }
 
         /// <summary>RL (Record Length)</summary>
         public ushort Length{ get; set; }

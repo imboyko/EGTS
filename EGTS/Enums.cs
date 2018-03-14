@@ -1,6 +1,6 @@
 ﻿namespace EGTS
 {
-    public enum ProcessingCodes : uint
+    public enum ProcessingCode : uint
     {
         /// <summary>Completely done</summary>
         EGTS_PC_OK = 0U,
@@ -83,18 +83,18 @@
         /// <summary>Unknown error </summary>
         EGTS_PC_UNKNOWN = 255U
     }
-}
 
-namespace EGTS.TransportLayer
-{
-    public enum RoutePriority : byte
+    public enum Priority : byte
     {
         Highest = 0,
         High,
         Normal,
         Low
     }
+}
 
+namespace EGTS.TransportLayer
+{
     public enum PacketType : byte
     {
         EGTS_PT_RESPONSE = 0,
@@ -105,7 +105,7 @@ namespace EGTS.TransportLayer
 
 namespace EGTS.ServiceLayer
 {
-    public enum Services : byte
+    public enum Service : byte
     {
         EGTS_AUTH_SERVICE = 1,
         EGTS_TELEDATA_SERVICE = 2,
@@ -114,7 +114,7 @@ namespace EGTS.ServiceLayer
         EGTS_ECALL_SERVICE = 10
     }
 
-    public enum SubrecordTypes : byte
+    public enum SubrecordType : byte
     {
         EGTS_SR_RECORD_RESPONSE = 0,
         #region EGTS_AUTH_SERVICE

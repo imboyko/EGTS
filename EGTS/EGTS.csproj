@@ -29,6 +29,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,37 +45,24 @@
   <ItemGroup>
     <Compile Include="IGetByteArray.cs" />
     <Compile Include="Packet.cs" />
-    <Compile Include="Parsers\AppdataParser.cs" />
-    <Compile Include="Parsers\IServiceFrameParser.cs" />
     <Compile Include="Parsers\PacketBuilder.cs" />
-    <Compile Include="Parsers\ResponseParser.cs" />
-    <Compile Include="Parsers\ServiceDataParser.cs" />
-    <Compile Include="Parsers\SignedAppdataParser.cs" />
     <Compile Include="Parsers\Validator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TransportLayer\ResponsePacket.cs" />
-    <Compile Include="ServiceLayer\ServiceDataRecord.cs" />
-    <Compile Include="TransportLayer\AppdataPacket.cs" />
-    <Compile Include="ServiceLayer\ServiceDataSubrecord.cs" />
-    <Compile Include="TransportLayer\ServiceFrameData.cs" />
-    <Compile Include="TransportLayer\SignedAppdataPacket.cs" />
-    <Compile Include="ServiceLayer\SubrecordData.cs" />
-    <Compile Include="ServiceLayer\TeledataService\PosData.cs" />
-    <Compile Include="ServiceLayer\SubrecordResponse.cs" />
+    <Compile Include="ServiceLayerData\ResponsePacket.cs" />
+    <Compile Include="ServiceLayerData\ServiceDataRecords\ServiceDataRecord.cs" />
+    <Compile Include="ServiceLayerData\AppdataPacket.cs" />
+    <Compile Include="ServiceLayerData\ServiceDataRecords\Subrecords\ServiceDataSubrecord.cs" />
+    <Compile Include="ServiceLayerData\ServiceFrameData.cs" />
+    <Compile Include="ServiceLayerData\SignedAppdataPacket.cs" />
+    <Compile Include="ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordData.cs" />
+    <Compile Include="ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\TeledataServiceRecords\PosDataSubrecord.cs" />
+    <Compile Include="ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordResponse.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="TransportLayer\RoutingInfo.cs" />
-    <Compile Include="TransportLayer\TransportHeader.cs" />
+    <Compile Include="TransportLayerData\RoutingInfo.cs" />
+    <Compile Include="TransportLayerData\TransportHeader.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ServiceLayer\AuthService\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="docs\protocol_EGTS_services_v.1.7_P1_RUS.doc" />
-    <None Include="docs\protocol_EGTS_services_v.1.7_P2_RUS.doc" />
-    <None Include="docs\protocol_EGTS_services_v.1.7_P6_RUS.doc" />
-    <None Include="docs\protocol_EGTS_services_v.1.7_P6_RUS_правка.doc" />
-    <None Include="docs\protocol_EGTS_transport_v.1.7_RUS.doc" />
-    <None Include="docs\Рекомендации по межсистемному взаимодействию.docx" />
+    <Folder Include="ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\AuthService\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

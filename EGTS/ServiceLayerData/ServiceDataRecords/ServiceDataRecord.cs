@@ -11,7 +11,28 @@ namespace EGTS.ServiceLayer
         /// <summary>RN (Record Number)</summary>
         public ushort RecordNumber { get; set; }
 
-        // TODO: Flags
+        #region Record Flags
+        /// <summary>SSOD (Source Service On Device)</summary>
+        public bool SourceServiceOnDevice { get; set; }
+
+        /// <summary>RSOD (Recipient Service On Device)</summary>
+        public bool RecipientServiceOnDevice { get; set; }
+
+        /// <summary>GRP (Group)</summary>
+        public bool Group { get; set; }
+
+        /// <summary>RPP (Record Processing Priority)</summary>
+        public Priority ProcessingPriority { get; set; }
+
+        /// <summary>TMFE (Time Field Exists)</summary>
+        public bool TimeFieldExists { get; set; }
+
+        /// <summary>EVFE (Event ID Field  Exists)</summary>
+        public bool EventFieldExists { get; set; }
+
+        /// <summary>OBFE (Object ID Field Exists)</summary>
+        public bool ObjectFieldExists { get; set; }
+        #endregion
 
         /// <summary>OID (Object Identifier)</summary>
         public uint ObjectID { get; set; }
@@ -22,7 +43,7 @@ namespace EGTS.ServiceLayer
         /// <summary>TM (Time)</summary>
         public uint TM { get; set; }
 
-        /// <summary>Time/summary>
+        /// <summary>Represents TM field as DateTime</summary>
         public DateTime Time
         {
             get
@@ -37,13 +58,13 @@ namespace EGTS.ServiceLayer
         }
 
         /// <summary>SST (Source Service Type)</summary>
-        public Services SourceService { get; set; }
+        public Service SourceService { get; set; }
 
         /// <summary>RST (Recipient Service Type)</summary>
-        public Services RecipientService { get; set; }
+        public Service RecipientService { get; set; }
 
         /// <summary>RD (Record Data)</summary>
-        public List<ServiceDataSubrecord> RecordData { get; set; }
+        public List<ServiceDataSubrecord> RecordData { get; set; } = new List<ServiceDataSubrecord>();
 
 
         public byte[] GetBytes()

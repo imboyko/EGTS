@@ -1,4 +1,4 @@
-﻿namespace EGTS.TransportLayer
+﻿namespace EGTS.ServiceLayer
 {
     class SignedAppdataPacket : ServiceFrameData
     {

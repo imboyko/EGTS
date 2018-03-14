@@ -1,4 +1,4 @@
-﻿namespace EGTS.TransportLayer
+﻿namespace EGTS.ServiceLayer
 {
     public class ResponsePacket : ServiceFrameData
     {
@@ -6,7 +6,7 @@
         public ushort ResponseTo { get; set; }
 
         /// <summary>PR (Processing Result)</summary>
-        public ProcessingCodes ResultCode { get; set; }
+        public ProcessingCode ResultCode { get; set; }
 
         public override byte[] GetBytes()
         {

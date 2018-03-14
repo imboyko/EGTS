@@ -26,7 +26,7 @@ namespace EGTS.TransportLayer
         public bool Compressed { get; set; }
 
         /// <summary>PR (Priority)</summary>
-        public RoutePriority Priority { get; set; }
+        public Priority Priority { get; set; }
 
         /// <summary>HL (Header Length)</summary>
         public byte HeaderLength { get; set; }
