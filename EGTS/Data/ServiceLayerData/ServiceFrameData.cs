@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EGTS.ServiceLayer
+namespace EGTS.Data.ServiceLayer
 {
     public abstract class ServiceFrameData : IGetByteArray
     {

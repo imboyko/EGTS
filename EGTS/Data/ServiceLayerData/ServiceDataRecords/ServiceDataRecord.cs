@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace EGTS.ServiceLayer
+namespace EGTS.Data.ServiceLayer
 {
     public class ServiceDataRecord : IGetByteArray
     {

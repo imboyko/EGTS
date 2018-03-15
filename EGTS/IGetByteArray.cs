@@ -1,6 +1,6 @@
 ﻿namespace EGTS
 {
-    interface IGetByteArray
+    internal interface IGetByteArray
     {
         byte[] GetBytes();
     }

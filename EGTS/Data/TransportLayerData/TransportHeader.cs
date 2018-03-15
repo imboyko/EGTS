@@ -1,7 +1,4 @@
-﻿
-using EGTS.ServiceLayer;
-
-namespace EGTS.TransportLayer
+﻿namespace EGTS.Data.TransportLayer
 {
     /// <summary>EGTS Transport Layer Header</summary>
     public class TransportHeader

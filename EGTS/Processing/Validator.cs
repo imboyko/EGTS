@@ -1,4 +1,6 @@
-﻿namespace EGTS
+﻿using EGTS.Data;
+
+namespace EGTS
 {
     public static class Validator
     {
@@ -74,15 +76,63 @@
             0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0
          };
 
-        public static byte Crc8(byte[] data, ushort length)
+        public static byte GetCrc8(byte[] data, ushort length)
         {
             byte result = 0xFF;
 
             for (int i = 0; i < length; i++)
+            { 
                 result = CRC8Table[result ^ data[i]];
+            }
 
             return result;
 
+        }
+
+        public static ushort GetCrc16(byte[] data, int firstByte, ushort length)
+        {
+            ushort result = 0xFFFF;
+
+            for (int i = firstByte; i < length; i++)
+            { 
+                result = (ushort)((result << 8) ^ Crc16Table[(result >> 8) ^ data[i]]);
+            }
+
+            return result;
+        }
+
+        public static ProcessingCode CheckPacket(Packet packet, byte[] source)
+        {
+            // Check protocol version support
+            if (packet.Header.ProtocolVersion != 1 || packet.Header.Prefix != 0)
+                return ProcessingCode.EGTS_PC_UNS_PROTOCOL;
+
+            // Check header length
+            if (packet.Header.HeaderLength != 11 && packet.Header.HeaderLength != 16)
+                return ProcessingCode.EGTS_PC_INC_HEADERFORM;
+
+            // Check header CRC
+            if (GetCrc8(source, (ushort)(packet.Header.HeaderLength - 1)) != packet.Header.CRC)
+                return ProcessingCode.EGTS_PC_HEADERCRC_ERROR;
+
+            // TODO: add routing check
+
+            // Check if FDL is zero
+            if (packet.Header.FrameDataLength == 0)
+                return ProcessingCode.EGTS_PC_OK;
+
+            // TODO Check SFRD crc
+
+            // Any encryption algorythm isn't supported
+            if(packet.Header.EncryptionAlgorithm != 0)
+                return ProcessingCode.EGTS_PC_DECRYPT_ERROR;
+
+            // Compression isn't supported
+            if(packet.Header.Compressed)
+                return ProcessingCode.EGTS_PC_INC_DATAFORM;
+
+            // No errors
+            return ProcessingCode.EGTS_PC_OK;
         }
     }
 }

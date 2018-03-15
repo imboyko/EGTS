@@ -1,8 +1,8 @@
-﻿using System;
-using EGTS.TransportLayer;
-using EGTS.ServiceLayer;
+﻿using EGTS.Data;
+using EGTS.Data.ServiceLayer;
+using EGTS.Data.TransportLayer;
+using System;
 using System.Collections.Generic;
-using EGTS.ServiceLayer.TeledataService;
 
 namespace EGTS
 {
@@ -195,8 +195,8 @@ namespace EGTS
 
         private void ParsePosDataSubrecord(ref byte[] data, int firstByte, ref ServiceDataSubrecord subrecord)
         {
-            PosDataSubrecord posData = new PosDataSubrecord();
-            uint x = 1;
+            Data.ServiceLayer.TeledataService.PosDataSubrecord posData = new Data.ServiceLayer.TeledataService.PosDataSubrecord();
+
             byte flags = data[firstByte + 12];
             posData.NTM = BitConverter.ToUInt32(data, firstByte + 0); 
             posData.Latitude = (float)BitConverter.ToUInt32(data, firstByte + 4) * 90 / 0xFFFFFFFF * ((((PosDataFlag)flags & PosDataFlag.LAHS) == PosDataFlag.LAHS) ? -1 : 1);
@@ -223,18 +223,6 @@ namespace EGTS
 
             subrecord.Data = posData;
         }
-
-        private uint ReverseBytes(uint value)
-        {
-            uint result;
-
-            byte[] temp = BitConverter.GetBytes(value);
-            Array.Reverse(temp);
-
-            result = BitConverter.ToUInt32(temp, 0);
-
-            return result;
-        } 
 
         private enum HeaderFlag : byte
         {

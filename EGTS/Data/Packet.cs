@@ -1,7 +1,7 @@
-﻿using EGTS.ServiceLayer;
-using EGTS.TransportLayer;
+﻿using EGTS.Data.ServiceLayer;
+using EGTS.Data.TransportLayer;
 
-namespace EGTS
+namespace EGTS.Data
 {
     public class Packet : IGetByteArray
     {

@@ -15,13 +15,12 @@ namespace Test
 
             EGTS.PacketBuilder builder = new EGTS.PacketBuilder();
             builder.BuildFromBytes(rawData);
+
             EGTS.Packet packet = builder.Packet;
-            ushort length = (ushort)(packet.Header.HeaderLength - 1);
-            byte crc8 = EGTS.Validator.Crc8(rawData, length);
 
-            Console.WriteLine("Packet CRC = {0}\nValidator CRC = {1}", packet.Header.CRC, crc8);
+            
 
-            Console.WriteLine(0xFFFFFFFF);
+
             Console.ReadKey();
 
         }

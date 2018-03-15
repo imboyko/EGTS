@@ -43,26 +43,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultProcessor.cs" />
     <Compile Include="IGetByteArray.cs" />
-    <Compile Include="Packet.cs" />
-    <Compile Include="Parsers\PacketBuilder.cs" />
-    <Compile Include="Parsers\Validator.cs" />
+    <Compile Include="IProcessor.cs" />
+    <Compile Include="Data\Packet.cs" />
+    <Compile Include="Processing\PacketBuilder.cs" />
+    <Compile Include="Processing\Validator.cs" />
+    <Compile Include="ProcessingResult.cs" />
+    <Compile Include="Processing\Processor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceLayerData\ResponsePacket.cs" />
-    <Compile Include="ServiceLayerData\ServiceDataRecords\ServiceDataRecord.cs" />
-    <Compile Include="ServiceLayerData\AppdataPacket.cs" />
-    <Compile Include="ServiceLayerData\ServiceDataRecords\Subrecords\ServiceDataSubrecord.cs" />
-    <Compile Include="ServiceLayerData\ServiceFrameData.cs" />
-    <Compile Include="ServiceLayerData\SignedAppdataPacket.cs" />
-    <Compile Include="ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordData.cs" />
-    <Compile Include="ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\TeledataServiceRecords\PosDataSubrecord.cs" />
-    <Compile Include="ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordResponse.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="TransportLayerData\RoutingInfo.cs" />
-    <Compile Include="TransportLayerData\TransportHeader.cs" />
+    <Compile Include="Data\ServiceLayerData\ResponsePacket.cs" />
+    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\ServiceDataRecord.cs" />
+    <Compile Include="Data\ServiceLayerData\AppdataPacket.cs" />
+    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\ServiceDataSubrecord.cs" />
+    <Compile Include="Data\ServiceLayerData\ServiceFrameData.cs" />
+    <Compile Include="Data\ServiceLayerData\SignedAppdataPacket.cs" />
+    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordData.cs" />
+    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\TeledataServiceRecords\PosDataSubrecord.cs" />
+    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordResponse.cs" />
+    <Compile Include="Data\Enums.cs" />
+    <Compile Include="Data\TransportLayerData\RoutingInfo.cs" />
+    <Compile Include="Data\TransportLayerData\TransportHeader.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\AuthService\" />
+    <Folder Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\AuthService\" />
+    <Folder Include="Parsers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

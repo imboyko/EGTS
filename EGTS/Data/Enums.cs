@@ -83,7 +83,10 @@
         /// <summary>Unknown error </summary>
         EGTS_PC_UNKNOWN = 255U
     }
+}
 
+namespace EGTS.Data
+{
     public enum Priority : byte
     {
         Highest = 0,
@@ -93,7 +96,7 @@
     }
 }
 
-namespace EGTS.TransportLayer
+namespace EGTS.Data.TransportLayer
 {
     public enum PacketType : byte
     {
@@ -103,7 +106,7 @@ namespace EGTS.TransportLayer
     }
 }
 
-namespace EGTS.ServiceLayer
+namespace EGTS.Data.ServiceLayer
 {
     public enum Service : byte
     {
@@ -118,7 +121,7 @@ namespace EGTS.ServiceLayer
     {
         EGTS_SR_RECORD_RESPONSE = 0,
         #region EGTS_AUTH_SERVICE
-        EGTS_SR_TERM_IDENTITY  =1,
+        EGTS_SR_TERM_IDENTITY = 1,
         EGTS_SR_MODULE_DATA = 2,
         EGTS_SR_VEHICLE_DATA = 3,
         EGTS_SR_DISPATCHER_IDENTITY = 5,

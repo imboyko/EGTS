@@ -1,4 +1,4 @@
-﻿namespace EGTS.ServiceLayer
+﻿namespace EGTS.Data.ServiceLayer
 {
     public class AppdataPacket : ServiceFrameData
     {

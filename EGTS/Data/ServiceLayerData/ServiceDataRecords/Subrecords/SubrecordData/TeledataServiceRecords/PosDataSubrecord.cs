@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EGTS.ServiceLayer.TeledataService
+namespace EGTS.Data.ServiceLayer.TeledataService
 {
     public class PosDataSubrecord : SubrecordData
     {
