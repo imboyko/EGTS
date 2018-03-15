@@ -196,31 +196,45 @@ namespace EGTS
         private void ParsePosDataSubrecord(ref byte[] data, int firstByte, ref ServiceDataSubrecord subrecord)
         {
             PosDataSubrecord posData = new PosDataSubrecord();
-
+            uint x = 1;
             byte flags = data[firstByte + 12];
             posData.NTM = BitConverter.ToUInt32(data, firstByte + 0); 
             posData.Latitude = (float)BitConverter.ToUInt32(data, firstByte + 4) * 90 / 0xFFFFFFFF * ((((PosDataFlag)flags & PosDataFlag.LAHS) == PosDataFlag.LAHS) ? -1 : 1);
             posData.Longitude = (float)BitConverter.ToUInt32(data, firstByte + 8) * 180 / 0xFFFFFFFF * ((((PosDataFlag)flags & PosDataFlag.LOHS) == PosDataFlag.LOHS) ? -1 : 1);
 
-            
             posData.Valid = ((PosDataFlag)flags & PosDataFlag.VLD) == PosDataFlag.VLD;
             posData.Actual = ((PosDataFlag)flags & PosDataFlag.BB) != PosDataFlag.BB;
             posData.Moving = ((PosDataFlag)flags & PosDataFlag.MV) == PosDataFlag.MV;
 
-            // TODO: speed, direction, alt sign
-            posData.Speed = BitConverter.ToUInt16(new byte[] { (byte)(data[firstByte + 14] & 0x3F), data[firstByte + 13] }, 0);
-            posData.Direction = data[firstByte + 15];
-
-            posData.Odometer = BitConverter.ToUInt32(new byte[] {0, data[firstByte + 15], data[firstByte + 16], data[firstByte + 17] }, 0);
             
+            posData.Speed = BitConverter.ToUInt16(new byte[] { (byte)(data[firstByte + 14] & 0x3F), data[firstByte + 13] }, 0) / 10 * 1.60934F;
+            posData.Direction = BitConverter.ToUInt16(new byte[] { (byte)(data[firstByte + 14] & 0x80), data[firstByte + 15] },0);
 
+            
+            posData.Odometer = (float)BitConverter.ToUInt32(new byte[] { data[firstByte + 15], data[firstByte + 16], data[firstByte + 17], 0 }, 0) / 10;
+            
             posData.DigitalInputs = data[firstByte + 18];
             posData.Source = data[firstByte + 19];
 
-            // TODO: altitude (+20)
+            if(((PosDataFlag)flags & PosDataFlag.ALTE) == PosDataFlag.ALTE)
+            {
+                posData.Altitude = BitConverter.ToInt32(new byte[] { data[firstByte + 21], data[firstByte + 22], data[firstByte + 23], 0 }, 0) * (((data[firstByte + 14] & 0x40) == 0x40) ? -1 : 1);
+            }
 
             subrecord.Data = posData;
         }
+
+        private uint ReverseBytes(uint value)
+        {
+            uint result;
+
+            byte[] temp = BitConverter.GetBytes(value);
+            Array.Reverse(temp);
+
+            result = BitConverter.ToUInt32(temp, 0);
+
+            return result;
+        } 
 
         private enum HeaderFlag : byte
         {
@@ -241,43 +255,25 @@ namespace EGTS
 
         private enum RecordFlag : byte
         {
-            bit0 = (1 << 0),
-            bit1 = (1 << 1),
-            bit2 = (1 << 2),
-            bit3 = (1 << 3),
-            bit4 = (1 << 4),
-            bit5 = (1 << 5),
-            bit6 = (1 << 6),
-            bit7 = (1 << 7),
-
-            OBFE = bit0,
-            EVFE = bit1,
-            TMFE = bit2,
-            RPP = bit3 | bit4,
-            GRP = bit5,
-            RSOD = bit6,
-            SSOD = bit7
+            OBFE = (1 << 0),
+            EVFE = (1 << 1),
+            TMFE = (1 << 2),
+            RPP = (1 << 3) | (1 << 4),
+            GRP = (1 << 5),
+            RSOD = (1 << 6),
+            SSOD = (1 << 7)
         }
 
         private enum PosDataFlag : byte
         {
-            bit0 = (1 << 0),
-            bit1 = (1 << 1),
-            bit2 = (1 << 2),
-            bit3 = (1 << 3),
-            bit4 = (1 << 4),
-            bit5 = (1 << 5),
-            bit6 = (1 << 6),
-            bit7 = (1 << 7),
-
-            VLD = bit0,
-            FIX = bit1,
-            CS = bit2,
-            BB = bit3,
-            MV = bit4,
-            LAHS = bit5,
-            LOHS = bit6,
-            ALTE = bit7
+            VLD = (1 << 0),
+            FIX = (1 << 1),
+            CS = (1 << 2),
+            BB = (1 << 3),
+            MV = (1 << 4),
+            LAHS = (1 << 5),
+            LOHS = (1 << 6),
+            ALTE = (1 << 7)
         }
     }
 }
