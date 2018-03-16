@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EGTS.Data.ServiceLayer
+namespace Egts.Data.ServiceLayer
 {
     class SubrecordResponse : SubrecordData
     {

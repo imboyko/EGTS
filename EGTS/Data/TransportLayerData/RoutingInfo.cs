@@ -1,4 +1,4 @@
-﻿namespace EGTS.Data.TransportLayer
+﻿namespace Egts.Data.TransportLayer
 {
     public struct RoutingInfo
     {

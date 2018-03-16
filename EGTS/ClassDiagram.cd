@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Egts.EgtsProcessor" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAQAAgAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Processing\EgtsProcessor.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="PacketProcessor" />
+      <Field Name="Builder" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Egts.EgtsPacketBuilder" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="Egts.EgtsPacketBuilder.ServiceFrameParserDel" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Processing\PacketBuilder.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="Egts.EgtsPacketBuilder.SubrecordParserDel" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Processing\PacketBuilder.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Enum Name="Egts.EgtsPacketBuilder.HeaderFlag" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Processing\PacketBuilder.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Egts.EgtsPacketBuilder.RecordFlag" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Processing\PacketBuilder.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Egts.EgtsPacketBuilder.PosDataFlag" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Processing\PacketBuilder.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AiQAAAAAAAAMAAIAAAAAAAAgAAABAEIAAAAABAAABCA=</HashCode>
+      <FileName>Processing\PacketBuilder.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Packet" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Egts.Data.EgtsPacket" Collapsed="true">
+    <Position X="5.75" Y="4.25" Width="1.5" />
+    <AssociationLine Name="Processor" Type="Egts.Processing.IEgtsProcessor" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.75" Y="4.444" />
+        <Point X="5.552" Y="4.444" />
+        <Point X="5.552" Y="3.688" />
+        <Point X="4.25" Y="3.688" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>BACAAAAAAAAAAAAAAgAAAABAAACAAAEAAAAAAAAEAAA=</HashCode>
+      <FileName>Data\EgtsPacket.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ServiceFrameData" />
+      <Property Name="Processor" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Egts.Data.ServiceLayer.ServiceFrameData" Collapsed="true">
+    <Position X="5.75" Y="6.5" Width="1.5" />
+    <AssociationLine Name="ServiceDataRecords" Type="Egts.Data.ServiceLayer.ServiceDataRecord" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.75" Y="6.875" />
+        <Point X="4.312" Y="6.875" />
+        <Point X="4.312" Y="5.562" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Processor" Type="Egts.Processing.IEgtsProcessor" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.75" Y="6.688" />
+        <Point X="5.375" Y="6.688" />
+        <Point X="5.375" Y="3.938" />
+        <Point X="4.25" Y="3.938" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAgAAIABAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Data\ServiceLayerData\ServiceFrameData.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Processor" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="ServiceDataRecords" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Egts.Data.ServiceLayer.ServiceDataRecord" Collapsed="true">
+    <Position X="3.25" Y="5" Width="1.5" />
+    <AssociationLine Name="Processor" Type="Egts.Processing.IEgtsProcessor" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="3.25" Y="5.25" />
+        <Point X="2.688" Y="5.25" />
+        <Point X="2.688" Y="4.062" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>ACCEEEAAAAAAAAAAxgAAAghAAAgAAABgCAgAAQAEAQA=</HashCode>
+      <FileName>Data\ServiceLayerData\ServiceDataRecords\ServiceDataRecord.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Processor" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="RecordData" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Egts.Data.ServiceLayer.ServiceDataSubrecord" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAgAAAABAAAAAABAAAQAAAAAEAAA=</HashCode>
+      <FileName>Data\ServiceLayerData\ServiceDataRecords\Subrecords\ServiceDataSubrecord.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Data" />
+      <Property Name="Processor" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Egts.Data.ServiceLayer.SubrecordData" Collapsed="true">
+    <Position X="4.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordData.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Egts.Data.ServiceLayer.SubrecordResponse" Collapsed="true">
+    <Position X="3.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Egts.Data.ServiceLayer.TeledataService.PosDataSubrecord" Collapsed="true">
+    <Position X="5.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IQCAAAAAAkAAAAAAACAIgAABAAAAAAAQABABBAAAIAA=</HashCode>
+      <FileName>Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\TeledataServiceRecords\PosDataSubrecord.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Egts.Data.ServiceLayer.AppdataPacket" Collapsed="true">
+    <Position X="8" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\ServiceLayerData\AppdataPacket.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Egts.Data.ServiceLayer.ResponsePacket" Collapsed="true">
+    <Position X="3.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAgAAAAAACAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Data\ServiceLayerData\ResponsePacket.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Egts.Data.ServiceLayer.SignedAppdataPacket" Collapsed="true">
+    <Position X="5.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABCAAAAAAAAAAAAAAgAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\ServiceLayerData\SignedAppdataPacket.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Egts.Processing.IEgtsProcessor" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAIAAAAIAIAAAAAAAAAA=</HashCode>
+      <FileName>Processing\IEgtsProcessor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

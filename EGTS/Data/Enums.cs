@@ -1,4 +1,4 @@
-﻿namespace EGTS
+﻿namespace Egts
 {
     public enum ProcessingCode : uint
     {
@@ -85,7 +85,7 @@
     }
 }
 
-namespace EGTS.Data
+namespace Egts.Data
 {
     public enum Priority : byte
     {
@@ -96,7 +96,7 @@ namespace EGTS.Data
     }
 }
 
-namespace EGTS.Data.TransportLayer
+namespace Egts.Data.TransportLayer
 {
     public enum PacketType : byte
     {
@@ -106,7 +106,7 @@ namespace EGTS.Data.TransportLayer
     }
 }
 
-namespace EGTS.Data.ServiceLayer
+namespace Egts.Data.ServiceLayer
 {
     public enum Service : byte
     {

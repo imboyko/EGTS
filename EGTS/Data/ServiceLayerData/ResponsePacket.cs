@@ -1,4 +1,4 @@
-﻿namespace EGTS.Data.ServiceLayer
+﻿namespace Egts.Data.ServiceLayer
 {
     public class ResponsePacket : ServiceFrameData
     {
@@ -9,6 +9,11 @@
         public ProcessingCode ResultCode { get; set; }
 
         public override byte[] GetBytes()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void Process(ref ProcessingResult result)
         {
             throw new System.NotImplementedException();
         }

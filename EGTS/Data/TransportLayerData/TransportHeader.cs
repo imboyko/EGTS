@@ -1,4 +1,4 @@
-﻿namespace EGTS.Data.TransportLayer
+﻿namespace Egts.Data.TransportLayer
 {
     /// <summary>EGTS Transport Layer Header</summary>
     public class TransportHeader

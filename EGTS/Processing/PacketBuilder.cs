@@ -1,22 +1,22 @@
-﻿using EGTS.Data;
-using EGTS.Data.ServiceLayer;
-using EGTS.Data.TransportLayer;
+﻿using Egts.Data;
+using Egts.Data.ServiceLayer;
+using Egts.Data.TransportLayer;
 using System;
 using System.Collections.Generic;
 
-namespace EGTS
+namespace Egts
 {
-    public class PacketBuilder
+    public class EgtsPacketBuilder
     {
-        public Packet Packet { get; }
+        private EgtsPacket Packet;
         private delegate void ServiceFrameParserDel(ref byte[] data);
         private delegate void SubrecordParserDel(ref byte[] data, int firstByte, ref ServiceDataSubrecord subrecord);
         private Dictionary<PacketType, ServiceFrameParserDel> serviceFrameParsers;
         private Dictionary<SubrecordType, SubrecordParserDel> subrecordParsers;
 
-        public PacketBuilder()
+        public EgtsPacketBuilder()
         {
-            Packet = new Packet();
+            Packet = new EgtsPacket();
 
             serviceFrameParsers = new Dictionary<PacketType, ServiceFrameParserDel>()
             {
@@ -37,6 +37,11 @@ namespace EGTS
             ParseHeader(ref data);
             ParseServiceFrameData(ref data);
             ParseCRC(ref data);
+        }
+
+        public EgtsPacket GetPacket()
+        {
+            return Packet;
         }
 
         private void ParseHeader(ref byte[] data)
@@ -198,7 +203,7 @@ namespace EGTS
             Data.ServiceLayer.TeledataService.PosDataSubrecord posData = new Data.ServiceLayer.TeledataService.PosDataSubrecord();
 
             byte flags = data[firstByte + 12];
-            posData.NTM = BitConverter.ToUInt32(data, firstByte + 0); 
+            posData.NTM = BitConverter.ToUInt32(data, firstByte + 0);
             posData.Latitude = (float)BitConverter.ToUInt32(data, firstByte + 4) * 90 / 0xFFFFFFFF * ((((PosDataFlag)flags & PosDataFlag.LAHS) == PosDataFlag.LAHS) ? -1 : 1);
             posData.Longitude = (float)BitConverter.ToUInt32(data, firstByte + 8) * 180 / 0xFFFFFFFF * ((((PosDataFlag)flags & PosDataFlag.LOHS) == PosDataFlag.LOHS) ? -1 : 1);
 
@@ -206,17 +211,17 @@ namespace EGTS
             posData.Actual = ((PosDataFlag)flags & PosDataFlag.BB) != PosDataFlag.BB;
             posData.Moving = ((PosDataFlag)flags & PosDataFlag.MV) == PosDataFlag.MV;
 
-            
-            posData.Speed = BitConverter.ToUInt16(new byte[] { (byte)(data[firstByte + 14] & 0x3F), data[firstByte + 13] }, 0) / 10 * 1.60934F;
-            posData.Direction = BitConverter.ToUInt16(new byte[] { (byte)(data[firstByte + 14] & 0x80), data[firstByte + 15] },0);
 
-            
+            posData.Speed = BitConverter.ToUInt16(new byte[] { (byte)(data[firstByte + 14] & 0x3F), data[firstByte + 13] }, 0) / 10 * 1.60934F;
+            posData.Direction = BitConverter.ToUInt16(new byte[] { (byte)(data[firstByte + 14] & 0x80), data[firstByte + 15] }, 0);
+
+
             posData.Odometer = (float)BitConverter.ToUInt32(new byte[] { data[firstByte + 15], data[firstByte + 16], data[firstByte + 17], 0 }, 0) / 10;
-            
+
             posData.DigitalInputs = data[firstByte + 18];
             posData.Source = data[firstByte + 19];
 
-            if(((PosDataFlag)flags & PosDataFlag.ALTE) == PosDataFlag.ALTE)
+            if (((PosDataFlag)flags & PosDataFlag.ALTE) == PosDataFlag.ALTE)
             {
                 posData.Altitude = BitConverter.ToInt32(new byte[] { data[firstByte + 21], data[firstByte + 22], data[firstByte + 23], 0 }, 0) * (((data[firstByte + 14] & 0x40) == 0x40) ? -1 : 1);
             }

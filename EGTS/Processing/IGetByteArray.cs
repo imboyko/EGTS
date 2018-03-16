@@ -1,4 +1,4 @@
-﻿namespace EGTS
+﻿namespace Egts
 {
     internal interface IGetByteArray
     {

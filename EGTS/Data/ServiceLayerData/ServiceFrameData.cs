@@ -1,16 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using Egts.Processing;
+using System.Collections.Generic;
 
-namespace EGTS.Data.ServiceLayer
+namespace Egts.Data.ServiceLayer
 {
-    public abstract class ServiceFrameData : IGetByteArray
+    public abstract class ServiceFrameData : IGetByteArray, IProcessible
     {
+        public List<ServiceDataRecord> ServiceDataRecords { get; set; }
+
+        public IEgtsProcessor Processor { get; private set; }
+
         public ServiceFrameData()
         {
             ServiceDataRecords = new List<ServiceDataRecord>();
         }
 
-        /// <summary>SDR (Service Data Record)</summary>
-        public List<ServiceDataRecord> ServiceDataRecords { get; set; }
+        public void SetProcessor(IEgtsProcessor processor)
+        {
+            Processor = processor;
+            foreach (ServiceDataRecord record in ServiceDataRecords)
+            {
+                record.SetProcessor(processor);
+            }
+        }
+
+        public abstract void Process(ref ProcessingResult result);
 
         public abstract byte[] GetBytes();
     }

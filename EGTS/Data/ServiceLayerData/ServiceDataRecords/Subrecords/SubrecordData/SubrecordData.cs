@@ -1,4 +1,6 @@
-﻿namespace EGTS.Data.ServiceLayer
+﻿using Egts.Processing;
+
+namespace Egts.Data.ServiceLayer
 {
     public abstract class SubrecordData : IGetByteArray
     {

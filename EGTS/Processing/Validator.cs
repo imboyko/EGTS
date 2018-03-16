@@ -1,6 +1,6 @@
-﻿using EGTS.Data;
+﻿using Egts.Data;
 
-namespace EGTS
+namespace Egts
 {
     public static class Validator
     {
@@ -99,40 +99,6 @@ namespace EGTS
             }
 
             return result;
-        }
-
-        public static ProcessingCode CheckPacket(Packet packet, byte[] source)
-        {
-            // Check protocol version support
-            if (packet.Header.ProtocolVersion != 1 || packet.Header.Prefix != 0)
-                return ProcessingCode.EGTS_PC_UNS_PROTOCOL;
-
-            // Check header length
-            if (packet.Header.HeaderLength != 11 && packet.Header.HeaderLength != 16)
-                return ProcessingCode.EGTS_PC_INC_HEADERFORM;
-
-            // Check header CRC
-            if (GetCrc8(source, (ushort)(packet.Header.HeaderLength - 1)) != packet.Header.CRC)
-                return ProcessingCode.EGTS_PC_HEADERCRC_ERROR;
-
-            // TODO: add routing check
-
-            // Check if FDL is zero
-            if (packet.Header.FrameDataLength == 0)
-                return ProcessingCode.EGTS_PC_OK;
-
-            // TODO Check SFRD crc
-
-            // Any encryption algorythm isn't supported
-            if(packet.Header.EncryptionAlgorithm != 0)
-                return ProcessingCode.EGTS_PC_DECRYPT_ERROR;
-
-            // Compression isn't supported
-            if(packet.Header.Compressed)
-                return ProcessingCode.EGTS_PC_INC_DATAFORM;
-
-            // No errors
-            return ProcessingCode.EGTS_PC_OK;
         }
     }
 }
