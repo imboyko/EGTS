@@ -1,6 +1,7 @@
 ﻿using Egts.Data.ServiceLayer;
 using Egts.Data.TransportLayer;
 using Egts.Processing;
+using System;
 using System.Collections.Generic;
 
 namespace Egts.Data
@@ -29,7 +30,15 @@ namespace Egts.Data
 
         public byte[] GetBytes()
         {
-            throw new System.NotImplementedException();
+            int packetLength = Header.HeaderLength + Header.FrameDataLength + ((Header.FrameDataLength > 0) ? 2 : 0);
+            byte[] result = new byte[packetLength];
+
+            Header.GetBytes().CopyTo(result, 0);
+            ServiceFrameData.GetBytes().CopyTo(result, Header.HeaderLength);
+
+            BitConverter.GetBytes(CRC).CopyTo(result, Header.HeaderLength + Header.FrameDataLength);
+
+            return result;
         }
     }
 }

@@ -67,7 +67,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\AuthService\" />
-    <Folder Include="Parsers\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

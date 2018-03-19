@@ -94,6 +94,46 @@ namespace Egts.Data
         Normal,
         Low
     }
+
+    public enum HeaderFlags : byte
+    {
+        bit0 = (1 << 0),
+        bit1 = (1 << 1),
+        bit2 = (1 << 2),
+        bit3 = (1 << 3),
+        bit4 = (1 << 4),
+        bit5 = (1 << 5),
+        bit6 = (1 << 6),
+        bit7 = (1 << 7),
+
+        PR = bit0 | bit1,
+        CMP = bit2,
+        RTE = bit5,
+        PRF = bit6 | bit7
+    }
+
+    public enum RecordFlags : byte
+    {
+        OBFE = (1 << 0),
+        EVFE = (1 << 1),
+        TMFE = (1 << 2),
+        RPP = (1 << 3) | (1 << 4),
+        GRP = (1 << 5),
+        RSOD = (1 << 6),
+        SSOD = (1 << 7)
+    }
+
+    public enum PosDataFlags : byte
+    {
+        VLD = (1 << 0),
+        FIX = (1 << 1),
+        CS = (1 << 2),
+        BB = (1 << 3),
+        MV = (1 << 4),
+        LAHS = (1 << 5),
+        LOHS = (1 << 6),
+        ALTE = (1 << 7)
+    }
 }
 
 namespace Egts.Data.TransportLayer

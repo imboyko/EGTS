@@ -66,15 +66,101 @@ namespace Egts.Data.ServiceLayer
         public void Process(ref ProcessingResult result)
         {
             ProcessingCode code = Processor.ProcessServiceDataRecord(this);
+
             foreach (ServiceDataSubrecord subrecord in RecordData)
             {
                 subrecord.Process(ref result);
             }
+
+            result.RecResults.Add(new ProcessingResult.RecordResult() { Record = this, Result = code });
         }
 
         public byte[] GetBytes()
         {
-            throw new System.NotImplementedException();
+            byte[] result = new byte[7];
+
+            // 0-1 bytes will be setted later
+
+            BitConverter.GetBytes(RecordNumber).CopyTo(result, 2);  // 2-3
+
+            int resize = 0;
+            // Set flags
+            byte flags = 0;
+            if (SourceServiceOnDevice)
+            {
+                flags = (byte)(flags | (byte)RecordFlags.SSOD);
+            };
+            if (RecipientServiceOnDevice)
+            {
+                flags = (byte)(flags | (byte)RecordFlags.RSOD);
+            };
+            if (Group)
+            {
+                flags = (byte)(flags | (byte)RecordFlags.GRP);
+            };
+            if (TimeFieldExists)
+            {
+                flags = (byte)(flags | (byte)RecordFlags.TMFE);
+                resize += 4;
+            };
+            if (EventFieldExists)
+            {
+                flags = (byte)(flags | (byte)RecordFlags.EVFE);
+                resize += 4;
+            };
+            if (ObjectFieldExists)
+            {
+                flags = (byte)(flags | (byte)RecordFlags.OBFE);
+                resize += 4;
+            };
+            flags = (byte)(flags | ((byte)ProcessingPriority << 3));
+
+            result[4] = flags;  // 4
+
+            if (resize > 0)
+            {
+                Array.Resize(ref result, result.Length + resize);
+            }
+
+            // Set mandatory fields
+            int curPos = 5;
+            if (ObjectFieldExists)
+            {
+                BitConverter.GetBytes(ObjectID).CopyTo(result, curPos);
+                curPos += 4;
+            };
+            if (EventFieldExists)
+            {
+                BitConverter.GetBytes(EventID).CopyTo(result, curPos);
+                curPos += 4;
+            };
+            if (TimeFieldExists)
+            {
+                BitConverter.GetBytes(TM).CopyTo(result, curPos);
+                curPos += 4;
+            };
+
+            result[curPos] = (byte)SourceService;
+            curPos += 1;
+            result[curPos] = (byte)RecipientService;
+            curPos += 1;
+
+            ushort recLength = 0;
+            foreach (ServiceDataSubrecord subrecod in RecordData)
+            {
+                byte[] subrecBytes = subrecod.GetBytes();
+
+                recLength += (ushort)subrecBytes.Length;
+
+                Array.Resize(ref result, result.Length + subrecBytes.Length);
+
+                subrecBytes.CopyTo(result, curPos);
+                curPos += subrecBytes.Length;
+            }
+
+            BitConverter.GetBytes(recLength).CopyTo(result, 0);     // 0-1
+
+            return result;
         }
     }
 }

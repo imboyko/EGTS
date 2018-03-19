@@ -13,7 +13,9 @@ namespace Egts.Data.ServiceLayer
 
         public override byte[] GetBytes()
         {
-            throw new NotImplementedException();
+            byte[] CRN = BitConverter.GetBytes(ConfirmedRecord);    // 2 bytes
+
+            return new byte[] { CRN[0], CRN[1], Result };   // Total 3 bytes
         }
     }
 }

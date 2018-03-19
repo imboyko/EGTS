@@ -44,16 +44,88 @@ namespace Egts
             return Packet;
         }
 
+        public void BuildFromProcessingResult(ProcessingResult result)
+        {
+
+            ResponsePacket response = new ResponsePacket
+            {
+                ResponseTo = result.PacketId,
+                ResultCode = result.Result
+            };
+
+            foreach (ProcessingResult.RecordResult recResult in result.RecResults)
+            {
+                // subrecord data
+                SubrecordResponse subrecord = new SubrecordResponse
+                {
+                    ConfirmedRecord = recResult.Record.RecordNumber,
+                    Result = (byte)recResult.Result
+                };
+
+                // record data
+                ServiceDataSubrecord recordData = new ServiceDataSubrecord
+                {
+                    Data = subrecord,
+                    Length = (ushort)subrecord.GetBytes().Length,
+                    Type = SubrecordType.EGTS_SR_RECORD_RESPONSE
+                };
+
+                // Record
+                ServiceDataRecord record = new ServiceDataRecord
+                {
+                    EventFieldExists = false,
+                    ObjectFieldExists = recResult.Record.ObjectFieldExists,
+                    ObjectID = recResult.Record.ObjectID,
+                    ProcessingPriority = recResult.Record.ProcessingPriority,
+                    RecipientService = recResult.Record.SourceService,
+                    RecipientServiceOnDevice = recResult.Record.SourceServiceOnDevice,
+                    RecordNumber = recResult.Record.RecordNumber,
+                    SourceService = recResult.Record.RecipientService,
+                    SourceServiceOnDevice = recResult.Record.RecipientServiceOnDevice,
+                    TimeFieldExists = false,
+                    RecordLength = (ushort)recordData.GetBytes().Length, // only one subrecord ib RecordData
+                };
+                record.RecordData.Add(recordData);
+
+                response.ServiceDataRecords.Add(record);
+            }
+
+            TransportHeader header = new TransportHeader
+            {
+                Compressed = false,
+                HeaderEncoding = 0,
+                PID = result.PacketId,
+                Prefix = 0,
+                Priority = Priority.Highest,
+                ProtocolVersion = 1,
+                Route = false,
+                SecurityKeyId = 0,
+                Type = PacketType.EGTS_PT_RESPONSE,
+                FrameDataLength = (ushort)response.GetBytes().Length,
+                HeaderLength = 11   // TODO: calculate HeaderLength
+            };
+
+            header.CRC = Validator.GetCrc8(header.GetBytes(), (ushort)(header.HeaderLength - 1));
+
+            Packet = new EgtsPacket
+            {
+                Header = header,
+                ServiceFrameData = response,
+                CRC = Validator.GetCrc16(response.GetBytes(), 0, header.FrameDataLength)
+            };
+        }
+
+        #region Parsing
         private void ParseHeader(ref byte[] data)
         {
             TransportHeader header = new TransportHeader
             {
                 ProtocolVersion = data[0],
                 SecurityKeyId = data[1],
-                Prefix = (byte)((data[2] & (byte)HeaderFlag.PRF) >> 6),
-                Route = (data[2] & (byte)HeaderFlag.RTE) == (byte)HeaderFlag.RTE,
-                Compressed = (data[2] & (byte)HeaderFlag.CMP) == (byte)HeaderFlag.CMP,
-                Priority = (Priority)(data[2] & (byte)HeaderFlag.PR),
+                Prefix = (byte)((data[2] & (byte)HeaderFlags.PRF) >> 6),
+                Route = (data[2] & (byte)HeaderFlags.RTE) == (byte)HeaderFlags.RTE,
+                Compressed = (data[2] & (byte)HeaderFlags.CMP) == (byte)HeaderFlags.CMP,
+                Priority = (Priority)(data[2] & (byte)HeaderFlags.PR),
                 HeaderLength = data[3],
                 HeaderEncoding = data[4],
                 FrameDataLength = BitConverter.ToUInt16(data, 5), // bytes 5 to 6
@@ -83,16 +155,26 @@ namespace Egts
 
         private void ParseServiceFrameData(ref byte[] data)
         {
+            if (Packet.Header.FrameDataLength == 0)
+            {
+                return;
+            }
+
             serviceFrameParsers.TryGetValue(Packet.Header.Type, out ServiceFrameParserDel parser);
             parser?.Invoke(ref data);
         }
 
         private void ParseCRC(ref byte[] data)
         {
+            if (Packet.Header.FrameDataLength == 0)
+            {
+                return;
+            }
+
             int packetLength = Packet.Header.HeaderLength + Packet.Header.FrameDataLength;
             if (packetLength < data.Length)
             {
-                Packet.CRC = BitConverter.ToUInt16(data, packetLength - 1);
+                Packet.CRC = BitConverter.ToUInt16(data, packetLength);
             }
         }
 
@@ -134,13 +216,13 @@ namespace Egts
                 byte flags = data[firstByte + offset];
                 offset += 1;
 
-                record.SourceServiceOnDevice = (flags & (byte)(RecordFlag.SSOD)) == (byte)RecordFlag.SSOD;
-                record.RecipientServiceOnDevice = (flags & (byte)(RecordFlag.RSOD)) == (byte)RecordFlag.RSOD;
-                record.Group = (flags & (byte)(RecordFlag.GRP)) == (byte)RecordFlag.GRP;
-                record.ProcessingPriority = (Priority)((flags & (byte)(RecordFlag.RPP)) >> 3);
-                record.TimeFieldExists = (flags & (byte)(RecordFlag.TMFE)) == (byte)RecordFlag.TMFE;
-                record.EventFieldExists = (flags & (byte)(RecordFlag.EVFE)) == (byte)RecordFlag.EVFE;
-                record.ObjectFieldExists = (flags & (byte)(RecordFlag.OBFE)) == (byte)RecordFlag.OBFE;
+                record.SourceServiceOnDevice = (flags & (byte)(RecordFlags.SSOD)) == (byte)RecordFlags.SSOD;
+                record.RecipientServiceOnDevice = (flags & (byte)(RecordFlags.RSOD)) == (byte)RecordFlags.RSOD;
+                record.Group = (flags & (byte)(RecordFlags.GRP)) == (byte)RecordFlags.GRP;
+                record.ProcessingPriority = (Priority)((flags & (byte)(RecordFlags.RPP)) >> 3);
+                record.TimeFieldExists = (flags & (byte)(RecordFlags.TMFE)) == (byte)RecordFlags.TMFE;
+                record.EventFieldExists = (flags & (byte)(RecordFlags.EVFE)) == (byte)RecordFlags.EVFE;
+                record.ObjectFieldExists = (flags & (byte)(RecordFlags.OBFE)) == (byte)RecordFlags.OBFE;
                 #endregion
 
                 if (record.ObjectFieldExists)
@@ -204,12 +286,12 @@ namespace Egts
 
             byte flags = data[firstByte + 12];
             posData.NTM = BitConverter.ToUInt32(data, firstByte + 0);
-            posData.Latitude = (float)BitConverter.ToUInt32(data, firstByte + 4) * 90 / 0xFFFFFFFF * ((((PosDataFlag)flags & PosDataFlag.LAHS) == PosDataFlag.LAHS) ? -1 : 1);
-            posData.Longitude = (float)BitConverter.ToUInt32(data, firstByte + 8) * 180 / 0xFFFFFFFF * ((((PosDataFlag)flags & PosDataFlag.LOHS) == PosDataFlag.LOHS) ? -1 : 1);
+            posData.Latitude = (float)BitConverter.ToUInt32(data, firstByte + 4) * 90 / 0xFFFFFFFF * ((((PosDataFlags)flags & PosDataFlags.LAHS) == PosDataFlags.LAHS) ? -1 : 1);
+            posData.Longitude = (float)BitConverter.ToUInt32(data, firstByte + 8) * 180 / 0xFFFFFFFF * ((((PosDataFlags)flags & PosDataFlags.LOHS) == PosDataFlags.LOHS) ? -1 : 1);
 
-            posData.Valid = ((PosDataFlag)flags & PosDataFlag.VLD) == PosDataFlag.VLD;
-            posData.Actual = ((PosDataFlag)flags & PosDataFlag.BB) != PosDataFlag.BB;
-            posData.Moving = ((PosDataFlag)flags & PosDataFlag.MV) == PosDataFlag.MV;
+            posData.Valid = ((PosDataFlags)flags & PosDataFlags.VLD) == PosDataFlags.VLD;
+            posData.Actual = ((PosDataFlags)flags & PosDataFlags.BB) != PosDataFlags.BB;
+            posData.Moving = ((PosDataFlags)flags & PosDataFlags.MV) == PosDataFlags.MV;
 
 
             posData.Speed = BitConverter.ToUInt16(new byte[] { (byte)(data[firstByte + 14] & 0x3F), data[firstByte + 13] }, 0) / 10 * 1.60934F;
@@ -221,53 +303,15 @@ namespace Egts
             posData.DigitalInputs = data[firstByte + 18];
             posData.Source = data[firstByte + 19];
 
-            if (((PosDataFlag)flags & PosDataFlag.ALTE) == PosDataFlag.ALTE)
+            if (((PosDataFlags)flags & PosDataFlags.ALTE) == PosDataFlags.ALTE)
             {
                 posData.Altitude = BitConverter.ToInt32(new byte[] { data[firstByte + 21], data[firstByte + 22], data[firstByte + 23], 0 }, 0) * (((data[firstByte + 14] & 0x40) == 0x40) ? -1 : 1);
             }
 
             subrecord.Data = posData;
         }
+        #endregion
 
-        private enum HeaderFlag : byte
-        {
-            bit0 = (1 << 0),
-            bit1 = (1 << 1),
-            bit2 = (1 << 2),
-            bit3 = (1 << 3),
-            bit4 = (1 << 4),
-            bit5 = (1 << 5),
-            bit6 = (1 << 6),
-            bit7 = (1 << 7),
-
-            PR = bit0 | bit1,
-            CMP = bit2,
-            RTE = bit5,
-            PRF = bit6 | bit7
-        }
-
-        private enum RecordFlag : byte
-        {
-            OBFE = (1 << 0),
-            EVFE = (1 << 1),
-            TMFE = (1 << 2),
-            RPP = (1 << 3) | (1 << 4),
-            GRP = (1 << 5),
-            RSOD = (1 << 6),
-            SSOD = (1 << 7)
-        }
-
-        private enum PosDataFlag : byte
-        {
-            VLD = (1 << 0),
-            FIX = (1 << 1),
-            CS = (1 << 2),
-            BB = (1 << 3),
-            MV = (1 << 4),
-            LAHS = (1 << 5),
-            LOHS = (1 << 6),
-            ALTE = (1 << 7)
-        }
     }
 }
 

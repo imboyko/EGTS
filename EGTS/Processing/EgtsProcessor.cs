@@ -33,14 +33,13 @@ namespace Egts
             }
             else
             {
-
+                procResult.PacketId = inPacket.Header.PID;
+                procResult.Result = code;
             }
 
-            // Builder.BuildResponse(procResult);
-            // EgtsPacket outPacket = Builder.GetPacket();
-            // return outPacket.GetBytes();
-
-            return new byte[0];
+            Builder.BuildFromProcessingResult(procResult);
+            EgtsPacket outPacket = Builder.GetPacket();
+            return outPacket.GetBytes();
         }
 
         private ProcessingCode CheckPacket(EgtsPacket packet, byte[] source)
@@ -63,7 +62,9 @@ namespace Egts
             if (packet.Header.FrameDataLength == 0)
                 return ProcessingCode.EGTS_PC_OK;
 
-            // TODO Check SFRD crc
+            // Check header CRC
+            if (packet.Header.FrameDataLength > 0 && Validator.GetCrc16(source, packet.Header.HeaderLength, packet.Header.FrameDataLength) != packet.CRC)
+                return ProcessingCode.EGTS_PC_DATACRC_ERROR;
 
             // Any encryption algorythm isn't supported
             if (packet.Header.EncryptionAlgorithm != 0)

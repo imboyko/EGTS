@@ -89,13 +89,13 @@ namespace Egts
 
         }
 
-        public static ushort GetCrc16(byte[] data, int firstByte, ushort length)
+        public static ushort GetCrc16(byte[] data, int offset, ushort length)
         {
             ushort result = 0xFFFF;
 
-            for (int i = firstByte; i < length; i++)
+            for (int i = 0; i < length; i++)
             { 
-                result = (ushort)((result << 8) ^ Crc16Table[(result >> 8) ^ data[i]]);
+                result = (ushort)((result << 8) ^ Crc16Table[(result >> 8) ^ data[offset + i]]);
             }
 
             return result;

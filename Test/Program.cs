@@ -16,7 +16,9 @@ namespace Test
             byte[] rawData = File.ReadAllBytes("Probes\\sevas.bin");
 
             EgtsProcessor egtsProcessor = new EgtsProcessor(new ToConsoleProcessor());
-            egtsProcessor.ProcessData(rawData);
+            rawData = egtsProcessor.ProcessData(rawData);
+
+            File.WriteAllBytes("response.bin", rawData);
 
             Console.ReadKey();
 
@@ -152,4 +154,6 @@ namespace Test
             Console.WriteLine("                Altitude                   - {0}", pos.Altitude);
         }
     }
+
+
 }
