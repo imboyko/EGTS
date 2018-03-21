@@ -57,21 +57,11 @@ namespace Egts.Data.ServiceLayer
         public void SetProcessor(IEgtsProcessor processor)
         {
             Processor = processor;
-            foreach (ServiceDataSubrecord subrecord in RecordData)
-            {
-                subrecord.SetProcessor(processor);
-            }
         }
 
         public void Process(ref ProcessingResult result)
         {
             ProcessingCode code = Processor.ProcessServiceDataRecord(this);
-
-            foreach (ServiceDataSubrecord subrecord in RecordData)
-            {
-                subrecord.Process(ref result);
-            }
-
             result.RecResults.Add(new ProcessingResult.RecordResult() { Record = this, Result = code });
         }
 

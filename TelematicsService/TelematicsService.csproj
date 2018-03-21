@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A2424CA5-2D18-4562-8916-06825440774B}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Egts</RootNamespace>
-    <AssemblyName>Egts</AssemblyName>
+    <ProjectGuid>{8A28C2A1-5870-4416-A449-3279166346C9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TelematicsService</RootNamespace>
+    <AssemblyName>TelematicsService</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,6 +24,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,46 +34,51 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <StartupObject>Telematics.Hosting.ConsoleSelfHost</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Processing\IGetByteArray.cs" />
-    <Compile Include="Data\EgtsPacket.cs" />
-    <Compile Include="Processing\IEgtsProcessor.cs" />
-    <Compile Include="Processing\IProcessible.cs" />
-    <Compile Include="Processing\PacketBuilder.cs" />
-    <Compile Include="Processing\Validator.cs" />
-    <Compile Include="Processing\ProcessingResult.cs" />
-    <Compile Include="Processing\EgtsProcessor.cs" />
+    <Compile Include="BuisnesLogic\EgtsDataProcessor.cs" />
+    <Compile Include="DAL\DataStorage.cs" />
+    <Compile Include="DAL\PosData.cs" />
+    <Compile Include="Hosting\ConsoleSelfHost.cs" />
+    <Compile Include="Networking\ConnectionThread.cs" />
+    <Compile Include="Networking\Server.cs" />
+    <Compile Include="Hosting\WindowsService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Hosting\WindowsService.Designer.cs">
+      <DependentUpon>WindowsService.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Hosting\WindowsServiceHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Data\ServiceLayerData\ResponsePacket.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\ServiceDataRecord.cs" />
-    <Compile Include="Data\ServiceLayerData\AppdataPacket.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\ServiceDataSubrecord.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceFrameData.cs" />
-    <Compile Include="Data\ServiceLayerData\SignedAppdataPacket.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordData.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\TeledataServiceRecords\PosDataSubrecord.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordResponse.cs" />
-    <Compile Include="Data\Enums.cs" />
-    <Compile Include="Data\TransportLayerData\RoutingInfo.cs" />
-    <Compile Include="Data\TransportLayerData\TransportHeader.cs" />
+    <Compile Include="WCF\IGeoService.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Hosting\WindowsService.resx">
+      <DependentUpon>WindowsService.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\AuthService\" />
+    <ProjectReference Include="..\EGTS\Egts.csproj">
+      <Project>{a2424ca5-2d18-4562-8916-06825440774b}</Project>
+      <Name>Egts</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

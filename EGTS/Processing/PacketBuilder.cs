@@ -284,28 +284,26 @@ namespace Egts
         {
             Data.ServiceLayer.TeledataService.PosDataSubrecord posData = new Data.ServiceLayer.TeledataService.PosDataSubrecord();
 
-            byte flags = data[firstByte + 12];
-            posData.NTM = BitConverter.ToUInt32(data, firstByte + 0);
-            posData.Latitude = (float)BitConverter.ToUInt32(data, firstByte + 4) * 90 / 0xFFFFFFFF * ((((PosDataFlags)flags & PosDataFlags.LAHS) == PosDataFlags.LAHS) ? -1 : 1);
-            posData.Longitude = (float)BitConverter.ToUInt32(data, firstByte + 8) * 180 / 0xFFFFFFFF * ((((PosDataFlags)flags & PosDataFlags.LOHS) == PosDataFlags.LOHS) ? -1 : 1);
+            byte flags = data[firstByte + 12];  // 12
+            posData.NTM = BitConverter.ToUInt32(data, firstByte + 0);   // 0-3
+            posData.Latitude = (float)BitConverter.ToUInt32(data, firstByte + 4) * 90 / 0xFFFFFFFF * ((((PosDataFlags)flags & PosDataFlags.LAHS) == PosDataFlags.LAHS) ? -1 : 1);   // 4-7
+            posData.Longitude = (float)BitConverter.ToUInt32(data, firstByte + 8) * 180 / 0xFFFFFFFF * ((((PosDataFlags)flags & PosDataFlags.LOHS) == PosDataFlags.LOHS) ? -1 : 1); // 8-11
 
             posData.Valid = ((PosDataFlags)flags & PosDataFlags.VLD) == PosDataFlags.VLD;
             posData.Actual = ((PosDataFlags)flags & PosDataFlags.BB) != PosDataFlags.BB;
             posData.Moving = ((PosDataFlags)flags & PosDataFlags.MV) == PosDataFlags.MV;
 
+            posData.Speed = BitConverter.ToUInt16(new byte[] { data[firstByte + 13], (byte)(data[firstByte + 14] & 0x3F) }, 0) / 10;// * 1.60934F; // 13-14
+            posData.Direction = BitConverter.ToUInt16(new byte[] { data[firstByte + 15], (byte)((data[firstByte + 14] & 0x80)>> 7)}, 0); // 15
 
-            posData.Speed = BitConverter.ToUInt16(new byte[] { (byte)(data[firstByte + 14] & 0x3F), data[firstByte + 13] }, 0) / 10 * 1.60934F;
-            posData.Direction = BitConverter.ToUInt16(new byte[] { (byte)(data[firstByte + 14] & 0x80), data[firstByte + 15] }, 0);
+            posData.Odometer = (float)BitConverter.ToUInt32(new byte[] { data[firstByte + 16], data[firstByte + 17], data[firstByte + 18], 0 }, 0) / 10;    // 16-18
 
-
-            posData.Odometer = (float)BitConverter.ToUInt32(new byte[] { data[firstByte + 15], data[firstByte + 16], data[firstByte + 17], 0 }, 0) / 10;
-
-            posData.DigitalInputs = data[firstByte + 18];
-            posData.Source = data[firstByte + 19];
+            posData.DigitalInputs = data[firstByte + 19];   // 19
+            posData.Source = data[firstByte + 20];  // 20
 
             if (((PosDataFlags)flags & PosDataFlags.ALTE) == PosDataFlags.ALTE)
             {
-                posData.Altitude = BitConverter.ToInt32(new byte[] { data[firstByte + 21], data[firstByte + 22], data[firstByte + 23], 0 }, 0) * (((data[firstByte + 14] & 0x40) == 0x40) ? -1 : 1);
+                posData.Altitude = BitConverter.ToInt32(new byte[] { data[firstByte + 21], data[firstByte + 22], data[firstByte + 23], 0 }, 0) * (((data[firstByte + 14] & 0x40) == 0x40) ? -1 : 1);    //21-23
             }
 
             subrecord.Data = posData;

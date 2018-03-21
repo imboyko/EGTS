@@ -10,6 +10,5 @@ namespace Egts.Processing
         ProcessingCode ProcessPacket(EgtsPacket packet);
         ProcessingCode ProcessServiceFrameData(ServiceFrameData data);
         ProcessingCode ProcessServiceDataRecord(ServiceDataRecord record);
-        ProcessingCode ProcessServiceDataSubrecord(ServiceDataSubrecord subrecord);
     }
 }

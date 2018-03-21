@@ -3,7 +3,7 @@ using System;
 
 namespace Egts.Data.ServiceLayer
 {
-    public class ServiceDataSubrecord : IGetByteArray, IProcessible
+    public class ServiceDataSubrecord : IGetByteArray
     {
         /// <summary>SRT (Subrecord Type)</summary>
         public SubrecordType Type { get; set; }
@@ -12,17 +12,6 @@ namespace Egts.Data.ServiceLayer
         /// <summary>SRD (Subrecord Data)</summary>
         public SubrecordData Data { get; set; }
 
-        public IEgtsProcessor Processor { get; private set; }
-
-        public void SetProcessor(IEgtsProcessor processor)
-        {
-            Processor = processor;
-        }
-
-        public void Process(ref ProcessingResult result)
-        {
-            Processor.ProcessServiceDataSubrecord(this);
-        }
 
         public byte[] GetBytes()
         {
