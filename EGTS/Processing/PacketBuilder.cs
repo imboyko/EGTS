@@ -293,7 +293,7 @@ namespace Egts
             posData.Actual = ((PosDataFlags)flags & PosDataFlags.BB) != PosDataFlags.BB;
             posData.Moving = ((PosDataFlags)flags & PosDataFlags.MV) == PosDataFlags.MV;
 
-            posData.Speed = BitConverter.ToUInt16(new byte[] { data[firstByte + 13], (byte)(data[firstByte + 14] & 0x3F) }, 0) / 10;// * 1.60934F; // 13-14
+            posData.Speed = (ushort)(BitConverter.ToUInt16(new byte[] { data[firstByte + 13], (byte)(data[firstByte + 14] & 0x3F) }, 0) / 10); // 13-14
             posData.Direction = BitConverter.ToUInt16(new byte[] { data[firstByte + 15], (byte)((data[firstByte + 14] & 0x80)>> 7)}, 0); // 15
 
             posData.Odometer = (float)BitConverter.ToUInt32(new byte[] { data[firstByte + 16], data[firstByte + 17], data[firstByte + 18], 0 }, 0) / 10;    // 16-18

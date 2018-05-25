@@ -66,11 +66,10 @@ namespace Telematics.Networking
 
                 if (BytesReceived != 0)
                 {
+                    DateTime now = DateTime.Now;
+                    File.WriteAllBytes(String.Format("dumps\\{0}-in.bin", now.TimeOfDay.Ticks), recieveBuffer);
                     byte[] sendBuffer = Context.ProcessData(recieveBuffer);
-#if DEBUG
-                    File.WriteAllBytes(String.Format("dumps\\{0}-{1}.bin", DateTime.Now.Ticks, "res"), recieveBuffer);
-                    File.WriteAllBytes(String.Format("dumps\\{0}-{1}.bin", DateTime.Now.Ticks, "send"), sendBuffer);
-#endif
+                    File.WriteAllBytes(String.Format("dumps\\{0}-out.bin", now.TimeOfDay.Ticks), sendBuffer);
                     SendMessage(sendBuffer);
                 }
                 else

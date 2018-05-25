@@ -7,7 +7,7 @@ namespace Egts.Data.ServiceLayer.TeledataService
         public uint NTM { get; set; }
         public float Latitude { get; set; }
         public float Longitude { get; set; }
-        public float Speed { get; set; }
+        public ushort Speed { get; set; }
         public ushort Direction { get; set; }
         public float Odometer { get; set; }
         public byte DigitalInputs { get; set; }

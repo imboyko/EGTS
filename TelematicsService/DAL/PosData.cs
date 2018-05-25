@@ -9,7 +9,7 @@ namespace Telematics.DAL
         public float Lat { get; set; }
         public float Lon { get; set; }
         public ushort Direction { get; set; }
-        public float Speed { get; set; }
+        public ushort Speed { get; set; }
         public float Odometer { get; set; }
         public bool Valid { get; set; }
         public bool Actual { get; set; }

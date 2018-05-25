@@ -3,12 +3,14 @@ using Egts.Data;
 using Egts.Data.ServiceLayer;
 using Egts.Data.ServiceLayer.TeledataService;
 using Egts.Processing;
+using System;
 
 namespace Telematics.BuisnesLogic
 {
-    class EgtsDataProcessor : IEgtsProcessor
+    class EgtsDataProcessor : IEgtsProcessor, IDisposable
     {
         private DAL.DataStorage Storage = new DAL.DataStorage();
+        private DAL.ExternalServices.GeoServicePortTypeClient geoService = new DAL.ExternalServices.GeoServicePortTypeClient("GeoServiceSoap");
 
         public ProcessingCode ProcessPacket(EgtsPacket packet)
         {
@@ -34,8 +36,7 @@ namespace Telematics.BuisnesLogic
                     continue;
                 }
 
-                PosDataSubrecord pos = subrecord.Data as PosDataSubrecord;
-                if (pos != null)
+                if (subrecord.Data is PosDataSubrecord pos)
                 {
                     DAL.PosData data = new DAL.PosData
                     {
@@ -51,15 +52,37 @@ namespace Telematics.BuisnesLogic
                         Moving = pos.Moving
                     };
 #if DEBUG
-                    System.Console.Write("*** RECORD #{0}", record.RecordNumber);
-                    System.Console.WriteLine("\tTIME={0}; ID={1}; LAT={2}; LON={3}; DIR={4}; SPD={5}; ODM={6}; VLD={7}; ACT={8}; MOV={9} ***",
+                    System.Console.Write("RECORD #{0}", record.RecordNumber);
+                    System.Console.Write("\tTIME={0}; ID={1}; LAT={2}; LON={3}; DIR={4}; SPD={5}; ODM={6}; VLD={7}; ACT={8}; MOV={9}",
                         data.Time, data.Id, data.Lat, data.Lon, data.Direction, data.Speed, data.Odometer, data.Valid, data.Actual, data.Moving);
                     
+
 #endif
-                    Storage.WritePosData(record.ObjectID, data);
+                    try
+                    {
+                        Storage.WritePosData(record.ObjectID, data);
+                        geoService.PutPosData(data.Id, data.Time, data.Lat, data.Lon, data.Direction, data.Speed, data.Odometer, data.Valid, data.Actual, data.Moving);
+#if DEBUG
+                        System.Console.ForegroundColor = System.ConsoleColor.Green;
+                        System.Console.WriteLine("\t[ SUCCESS ]");
+                        System.Console.ForegroundColor = System.ConsoleColor.White;
+#endif                        
+                    }
+                    catch (System.Exception e)
+                    {
+                        System.Console.ForegroundColor = System.ConsoleColor.Red;
+                        System.Console.WriteLine("\t[ FAIL ]");
+                        System.Console.WriteLine(e);
+                        System.Console.ForegroundColor = System.ConsoleColor.White;
+                    }
                 }
             }
             return ProcessingCode.EGTS_PC_OK;
+        }
+
+        public void Dispose()
+        {
+            geoService.Close();
         }
     }
 }
