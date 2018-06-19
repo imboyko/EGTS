@@ -9,17 +9,16 @@ namespace EgtsTest
         static void Main(string[] args)
         {
             EgtsProcessor egtsProcessor = new EgtsProcessor(new ToConsoleProcessor());
-            for (int i = 1; i <= 9; i++)
+            try
             {
-                byte[] rawData = File.ReadAllBytes(String.Format("Probes\\{0}-res.bin", i));
-
+                byte[] rawData = File.ReadAllBytes("Probes\\fail.bin");
+                //byte[] rawData = File.ReadAllBytes("Probes\\13.bin");
                 rawData = egtsProcessor.ProcessData(rawData);
-
-                File.WriteAllBytes("response.bin", rawData);
-
-                Console.ReadKey();
             }
-            Console.ReadKey();
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            };
         }
     }
 }

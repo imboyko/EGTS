@@ -66,11 +66,25 @@ namespace Telematics.Networking
 
                 if (BytesReceived != 0)
                 {
-                    DateTime now = DateTime.Now;
-                    File.WriteAllBytes(String.Format("dumps\\{0}-in.bin", now.TimeOfDay.Ticks), recieveBuffer);
-                    byte[] sendBuffer = Context.ProcessData(recieveBuffer);
-                    File.WriteAllBytes(String.Format("dumps\\{0}-out.bin", now.TimeOfDay.Ticks), sendBuffer);
-                    SendMessage(sendBuffer);
+                    try
+                    {
+                        byte[] sendBuffer = Context.ProcessData(recieveBuffer);
+                        SendMessage(sendBuffer);
+                    }
+                    catch(Exception e)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\t[ FAIL ]");
+                        Console.WriteLine(e);
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        File.WriteAllBytes(
+                            path: $"dumps\\fail_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.TimeOfDay.Hours}_{DateTime.Now.TimeOfDay.Minutes}_{DateTime.Now.TimeOfDay.Seconds}.bin",
+                            bytes: recieveBuffer);
+
+                        Disconnect();
+
+                    }
                 }
                 else
                 {
