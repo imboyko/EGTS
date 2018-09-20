@@ -1,9 +1,32 @@
-﻿using Egts.Data;
-
-namespace Egts
+﻿namespace EGTS.Helpers
 {
-    public static class Validator
+    public static class CRCHelper
     {
+        public static byte GetCrc8(byte[] data, ushort length)
+        {
+            byte result = 0xFF;
+
+            for (int i = 0; i < length; i++)
+            {
+                result = CRC8Table[result ^ data[i]];
+            }
+
+            return result;
+
+        }
+
+        public static ushort GetCrc16(byte[] data, int offset, ushort length)
+        {
+            ushort result = 0xFFFF;
+
+            for (int i = 0; i < length; i++)
+            {
+                result = (ushort)((result << 8) ^ Crc16Table[(result >> 8) ^ data[offset + i]]);
+            }
+
+            return result;
+        }
+
         private static byte[] CRC8Table =
         {
             0x00, 0x31, 0x62, 0x53, 0xC4, 0xF5, 0xA6, 0x97,
@@ -75,30 +98,5 @@ namespace Egts
             0xEF1F, 0xFF3E, 0xCF5D, 0xDF7C, 0xAF9B, 0xBFBA, 0x8FD9, 0x9FF8,
             0x6E17, 0x7E36, 0x4E55, 0x5E74, 0x2E93, 0x3EB2, 0x0ED1, 0x1EF0
          };
-
-        public static byte GetCrc8(byte[] data, ushort length)
-        {
-            byte result = 0xFF;
-
-            for (int i = 0; i < length; i++)
-            { 
-                result = CRC8Table[result ^ data[i]];
-            }
-
-            return result;
-
-        }
-
-        public static ushort GetCrc16(byte[] data, int offset, ushort length)
-        {
-            ushort result = 0xFFFF;
-
-            for (int i = 0; i < length; i++)
-            { 
-                result = (ushort)((result << 8) ^ Crc16Table[(result >> 8) ^ data[offset + i]]);
-            }
-
-            return result;
-        }
-    }
+     }
 }

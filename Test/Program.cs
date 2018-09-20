@@ -1,19 +1,23 @@
-﻿using Egts;
-using System;
+﻿using System;
 using System.IO;
 
 namespace EgtsTest
 {
     static class Program
     {
+
         static void Main(string[] args)
         {
-            EgtsProcessor egtsProcessor = new EgtsProcessor(new ToConsoleProcessor());
+
+            var converter = new EGTS.Helpers.PacketConverter();
+
             try
             {
-                byte[] rawData = File.ReadAllBytes("Probes\\fail.bin");
+                byte[] rawData = File.ReadAllBytes("Probes\\sevas.bin");
                 //byte[] rawData = File.ReadAllBytes("Probes\\13.bin");
-                rawData = egtsProcessor.ProcessData(rawData);
+                var packet = converter.FromBytes(rawData);
+
+
             }
             catch (Exception e)
             {

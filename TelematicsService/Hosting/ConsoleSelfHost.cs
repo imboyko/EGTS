@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Telematics.Networking;
+//using Telematics.Networking;
 
 namespace Telematics.Hosting
 {
@@ -22,7 +22,7 @@ namespace Telematics.Hosting
                 port = 6600;
                 Console.WriteLine("Unable convert port value {0} to int. Using default 6600.");
             }
-            Server server = new Server(port, new Telematics.BuisnesLogic.EgtsDataProcessor());
+           // Server server = new Server(port, new Telematics.BuisnesLogic.EgtsDataProcessor());
             
             Console.ReadKey();
         }

@@ -7,8 +7,8 @@
     <ProjectGuid>{A2424CA5-2D18-4562-8916-06825440774B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Egts</RootNamespace>
-    <AssemblyName>Egts</AssemblyName>
+    <RootNamespace>EGTS</RootNamespace>
+    <AssemblyName>EGTS</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -36,8 +36,16 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.5.9\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,33 +54,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Processing\IGetByteArray.cs" />
-    <Compile Include="Data\EgtsPacket.cs" />
-    <Compile Include="Processing\IEgtsProcessor.cs" />
-    <Compile Include="Processing\IProcessible.cs" />
-    <Compile Include="Processing\PacketBuilder.cs" />
-    <Compile Include="Processing\Validator.cs" />
-    <Compile Include="Processing\ProcessingResult.cs" />
+    <Compile Include="Helpers\PacketConverter.cs" />
+    <Compile Include="Interfaces\IPacketConverter.cs" />
+    <Compile Include="Interfaces\IPacketData.cs" />
+    <Compile Include="Types\Enums.cs" />
+    <Compile Include="Types\PacketData.cs" />
+    <Compile Include="Packet.cs" />
+    <Compile Include="Helpers\CRCHelper.cs" />
     <Compile Include="Processing\EgtsProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Data\ServiceLayerData\ResponsePacket.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\ServiceDataRecord.cs" />
-    <Compile Include="Data\ServiceLayerData\AppdataPacket.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\ServiceDataSubrecord.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceFrameData.cs" />
-    <Compile Include="Data\ServiceLayerData\SignedAppdataPacket.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordData.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\TeledataServiceRecords\PosDataSubrecord.cs" />
-    <Compile Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\SubrecordResponse.cs" />
-    <Compile Include="Data\Enums.cs" />
-    <Compile Include="Data\TransportLayerData\RoutingInfo.cs" />
-    <Compile Include="Data\TransportLayerData\TransportHeader.cs" />
+    <Compile Include="Types\ProcessingCodes.cs" />
+    <Compile Include="Types\RouteInfo.cs" />
+    <Compile Include="Types\ServiceDataRecord.cs" />
+    <Compile Include="Types\ServiceDataSubrecord.cs" />
+    <Compile Include="Types\ServiceDataRecord.Flags.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\ServiceLayerData\ServiceDataRecords\Subrecords\SubrecordData\AuthService\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
