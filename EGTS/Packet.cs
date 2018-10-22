@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 
 namespace EGTS
 {
@@ -15,6 +16,7 @@ namespace EGTS
         /// </param>
         public Packet(Types.PacketType type)
         {
+            Log.Debug("Вызов конструктора Packet(type={PacketType})", type);
             Type = type;
 
             // Инициализация PacketData
@@ -50,21 +52,29 @@ namespace EGTS
         /// </param>
         public Packet(Types.PacketType type, ushort responseTo)
         {
+            Log.Debug("Вызов конструктора Packet(type={PacketType}, responseTo={responseTo})", type, responseTo);
             Type = type;
 
             // Инициализация PacketData
             switch (type)
             {
+                case Types.PacketType.EGTS_PT_APPDATA:
+                    PacketData = new Types.Appdata(this);
+                    break;
+
+                case Types.PacketType.EGTS_PT_SIGNED_APPDATA:
+                    PacketData = new Types.SignedAppdata(this);
+                    break;
+
                 case Types.PacketType.EGTS_PT_RESPONSE:
                     PacketData = new Types.Response(this, responseTo);
                     break;
 
                 default:
                     throw new ArgumentException(
-                        message: $"Недопустимое значение параметра. Допустимо только значение {Types.PacketType.EGTS_PT_RESPONSE.ToString()}.", 
+                        message: $"Недопустимое значение параметра.",
                         paramName: "type");
             }
-
         }
         #endregion
 
@@ -73,22 +83,27 @@ namespace EGTS
         /// Тип пакета.
         /// </summary>
         public Types.PacketType Type { get; }
-        
+
         /// <summary>
         /// Идентификатор пакета.
         /// </summary>
         public ushort PID { get; set; }
-       
+
         /// <summary>
         /// Данные уровня поддержки услуг.
         /// </summary>
-        public IPacketData PacketData { get; }
+        public Types.IPacketData PacketData { get; }
 
         /// <summary>
         /// Информация для маршрутизации данного пакета.
         /// </summary>
         public Types.RouteInfo RouteInfo { get; set; }
         #endregion
+
+        public override string ToString()
+        {
+            return $"{this.Type} #{this.PID}";
+        }
 
     }
 }

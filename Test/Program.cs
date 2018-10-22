@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.IO;
 
 namespace EgtsTest
@@ -9,20 +10,51 @@ namespace EgtsTest
         static void Main(string[] args)
         {
 
-            var converter = new EGTS.Helpers.PacketConverter();
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .WriteTo.Console()
+                .CreateLogger();
 
+            if (args.Length != 1)
+            { 
+                Log.Fatal("Неверные аргументы запуска: {args}", args);
+                Console.WriteLine("Формат строки запуска\n\t EgtsTest.exe <имя_файла>");
+                return;
+            }
+                        
+            byte[] rawData = null;
+            var fileName = "Probes\\33.bin";
+
+            Log.Information("Чтение данных из файла {FileName}", args[0]);
             try
             {
-                byte[] rawData = File.ReadAllBytes("Probes\\sevas.bin");
-                //byte[] rawData = File.ReadAllBytes("Probes\\13.bin");
-                var packet = converter.FromBytes(rawData);
-
-
+                rawData = File.ReadAllBytes(args[0]);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e, "Что-то пошло не так... fileName = {fileName}", fileName);
             };
+
+            if(rawData != null)
+            {
+                Log.Information("Прочитано из файла {BytesRead}", rawData.Length);
+
+                var converter = new EGTS.Helpers.PacketConverter();
+
+                try
+                {
+                    var packet = converter.FromBytes(rawData);
+                }
+                catch ( Exception e)
+                {
+                    Log.Error(e, "Что-то пошло не так... rawData = {rawData}", rawData);
+                }
+                
+            }
+            else
+            {
+                Log.Warning("Данные из файла не прочитаны");
+            }
         }
     }
 }

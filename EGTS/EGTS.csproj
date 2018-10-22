@@ -36,8 +36,11 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.5.9\lib\net45\NLog.dll</HintPath>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.2.7.1\lib\net45\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Console, Version=3.1.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.Console.3.1.1\lib\net45\Serilog.Sinks.Console.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -56,28 +59,20 @@
   <ItemGroup>
     <Compile Include="Helpers\PacketConverter.cs" />
     <Compile Include="Interfaces\IPacketConverter.cs" />
-    <Compile Include="Interfaces\IPacketData.cs" />
     <Compile Include="Types\Enums.cs" />
     <Compile Include="Types\PacketData.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="Helpers\CRCHelper.cs" />
     <Compile Include="Processing\EgtsProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Types\ProcessingCodes.cs" />
     <Compile Include="Types\RouteInfo.cs" />
-    <Compile Include="Types\ServiceDataRecord.cs" />
-    <Compile Include="Types\ServiceDataSubrecord.cs" />
-    <Compile Include="Types\ServiceDataRecord.Flags.cs" />
+    <Compile Include="Types\DataRecord.cs" />
+    <Compile Include="Types\Subrecords.cs" />
+    <Compile Include="Types\Structs.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

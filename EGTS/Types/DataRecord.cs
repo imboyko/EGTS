@@ -3,23 +3,19 @@ using System.Collections.Generic;
 
 namespace EGTS.Types
 {
-    public partial class ServiceDataRecord
+    public partial class DataRecord
     {
-        internal ServiceDataRecord(Packet owner)
-        {
-            this.Packet = owner;
-        }
+        private readonly List<ISubrecord> subrecords = new List<ISubrecord>();
         
-        #region Свойства
         public Packet Packet { get; }
-
         public ushort Number { get; set; }
         public uint ObjectID { get; set; }
         public uint EventID { get; set; }
         public bool Group { get; set; }
         public DateTime Time;
-        
-        public List<ServiceDataSubrecord> ServiceDataSubrecord { get; } = new List<ServiceDataSubrecord>();
+
+        public IReadOnlyList<ISubrecord> Subrecords { get => subrecords; }
+
         public bool SourceServiceOnDevice { get; set; }
         public bool RecipientServiceOnDevice { get; set; }
 
@@ -27,8 +23,18 @@ namespace EGTS.Types
         public Service RecipientService { get; set; }
 
         public Priority ProcessingPriority { get; set; }
-   
-        #endregion
+
+
+        public DataRecord(Packet owner)
+        {
+
+            this.Packet = owner;
+        }
+
+        public override string ToString()
+        {
+            return $"{this.RecipientService} record #{this.Number}";
+        }
     }
 
 }
