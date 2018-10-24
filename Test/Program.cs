@@ -11,7 +11,7 @@ namespace EgtsTest
         {
 
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
+                .MinimumLevel.Debug()
                 .WriteTo.Console()
                 .CreateLogger();
 
@@ -47,7 +47,7 @@ namespace EgtsTest
                 }
                 catch ( Exception e)
                 {
-                    Log.Error(e, "Что-то пошло не так... rawData = {rawData}", rawData);
+                    Log.Error(e, "Ошибка при разборе двоичных данных.");
                 }
                 
             }

@@ -102,7 +102,7 @@ namespace EGTS
 
         public override string ToString()
         {
-            return $"{this.Type} #{this.PID}";
+            return $"{this.Type} packet #{this.PID}";
         }
 
     }

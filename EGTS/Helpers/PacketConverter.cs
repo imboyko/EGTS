@@ -42,19 +42,19 @@ namespace EGTS.Helpers
         /// <returns>Экземпляр пакета.</returns>
         public Packet FromBytes(byte[] bytes)
         {
-            Log.Debug("Вызов PacketConverter.FromBytes(byte[] {IncomingBytes})", bytes);
+            Log.Debug("Вызов PacketConverter.FromBytes(byte[] )");
+            Log.Verbose("Двоичные данные пакета: {SourceBytes}", bytes);
 
             // Чтение заголовка пакета.
             var header = ReadHeader(bytes);
 
             // TODO: валидация пакета
-            //logger.Debug($"Validation result {result}");
+            Log.Warning(new NotImplementedException(), "Валидация заголовка пакета");
 
             // Чтение данных уровня поддержки услуг, определение начала первой записи.
-            var sfrd = ReadSFRD(packetType:header.PT, sfrdBytes:header.SFRD);
-            
-            // TODO: дополнительная валидация пакета
+            var sfrd = ReadSFRD(packetType: header.PT, sfrdBytes: header.SFRD);
 
+            // TODO: дополнительная валидация пакета
 
             // Непосредственное создание пакета.
             var packet = new Packet((Types.PacketType)header.PT, sfrd.RPID)
@@ -75,7 +75,8 @@ namespace EGTS.Helpers
 
             return packet;
         }
-    
+
+
         /// <summary>
         /// Преобразует двоичные данные в структуру заголовка транспортного уровня.
         /// </summary>
@@ -83,46 +84,39 @@ namespace EGTS.Helpers
         /// <returns>Возвращает структуру, соответствующую заголовку транспортного уровня из протокола EGTS.</returns>
         private Types.Header ReadHeader(byte[] bytes)
         {
-            Log.Debug("Вызов PacketConverter.ReadHeader(byte[] )");
-            
+            Log.Debug("Чтение двоичных данных пакета. Вызов PacketConverter.ReadHeader(byte[] )");
+
             var header = new Types.Header();
 
             // Разбор заголовка пакета
             header.PRV = bytes[0];
-            Log.Verbose("\tВерсия протокола ЕГТС PRV = {ProtocolVersion}", header.PRV);
-
             header.SKID = bytes[1];
-
             header.Bitfield = bytes[2];
-            Log.Verbose("\tБитовое поле заголовка Bitfield = {HeaderBitfield}", header.Bitfield);
-
             header.HL = bytes[3];
-            Log.Verbose("\tДлина заголовка HL = {HeaderLength}", header.HL);
-
             header.HE = bytes[4];
-
             header.FDL = BitConverter.ToUInt16(bytes, 5); // bytes 5 to 6
-            Log.Verbose("\tДлина данных FDL = {FrameDataLenth}", header.FDL);
-
             header.PID = BitConverter.ToUInt16(bytes, 7); // bytes 7 to 8
-            Log.Verbose("\tID пакета PID = {PID}", header.PID);
-
             header.PT = bytes[9];
-            Log.Verbose("\tТип данных пакета PT = {PacketType}", (Types.PacketType)header.PT);
 
-            Log.Verbose("\tСтруктура маршрутизации RTE = {Routing}", header.RTE);
+            Log.Verbose("Protocol Version     PRV: {PRV}", header.PRV);
+            Log.Verbose("Security Key ID     SKID: {SKID}", header.SKID);
+            Log.Verbose("Header flags            : {HeaderFlags}", header.Bitfield);
+            Log.Verbose(" * Prefix                   PRF: {PRF}", header.PRF);
+            Log.Verbose(" * Route                    RTE: {RTE}", header.RTE);
+            Log.Verbose(" * Encryption Algorithm     ENA: {ENA}", header.ENA);
+            Log.Verbose(" * Compressed               CMP: {CMP}", header.CMP);
+            Log.Verbose(" * Priority                  PR: {PR}", header.PR);
+            Log.Verbose("Header Length         HL: {HL}", header.HL);
+            Log.Verbose("Header Encoding       HE: {HE}", header.HE);
+            Log.Verbose("Frame Data Length    FDL: {FDL}", header.FDL);
+            Log.Verbose("Packet Identifier    PID: {PID}", header.PID);
+            Log.Verbose("Packet Type           PT: {PT} [ {PacketType} ]", header.PT, (Types.PacketType)header.PT);
 
             if (header.RTE)
             {
                 header.PRA = BitConverter.ToUInt16(bytes, 10); // bytes 10 to 11
-                Log.Verbose("\tСистема-отправитель PRA = {PeerAddress}", header.PRA);
-
                 header.RCA = BitConverter.ToUInt16(bytes, 12); // bytes 12 to 13
-                Log.Verbose("\tСистема-получатель RCA = {RecipientAddress}", header.RCA);
-
                 header.TTL = bytes[14];
-                Log.Verbose("\tTTL = {TTL}", header.TTL);
-
                 header.HCS = bytes[15];
             }
             else
@@ -130,21 +124,62 @@ namespace EGTS.Helpers
                 header.HCS = bytes[10];
             }
 
-            Log.Verbose("\tCRC заголовка HCS = {HeaderCRC}", header.HCS);
+            Log.Verbose("Peer Address         PRA: {PRA}", header.RTE ? header.PRA : -1);
+            Log.Verbose("Recipient Address    RCA: {RCA}", header.RTE ? header.RCA : -1);
+            Log.Verbose("Time To Live         TTL: {TTL}", header.RTE ? header.TTL : -1);
+            Log.Verbose("Header Check Sum     HCS: {HCS}", header.HCS);
+
 
             header.HeaderBytes = new byte[header.HL];
             header.SFRD = new byte[header.FDL];
 
-            // Копирование байтов заголовка пакета в структуру
-            Array.Copy(sourceArray: bytes, destinationArray: header.HeaderBytes, length: header.HL);
+            try
+            {
+                // Копирование байтов заголовка пакета в структуру.
+                Array.Copy(sourceArray: bytes, destinationArray: header.HeaderBytes, length: header.HL);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Вызов Array.Copy(sourceArray: bytes, destinationArray: header.HeaderBytes, length: header.HL);" +
+                    "\nДлина источника sourceArray: {sourceArrayLength};" +
+                    "\nДлина приемника destinationArray {destinationArrayLength};" +
+                    "\nКопируемых элементов length: {lengthToCopy}",
+                    bytes.Length,
+                    header.HeaderBytes.Length,
+                    header.HL);
+
+                // Выкидываем исключение дальше.
+                throw e;
+            }
 
             if (header.FDL != 0)
             {
-                // Копирование байтов тела пакета в структуру
-                Array.Copy(sourceArray: bytes, destinationArray: header.SFRD, sourceIndex: header.HL, destinationIndex: 0, length: header.FDL);
+                try
+                {
+                    // Копирование байтов тела пакета в структуру
+                    Array.Copy(sourceArray: bytes, destinationArray: header.SFRD, sourceIndex: header.HL, destinationIndex: 0, length: header.FDL);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e, "Вызов Array.Copy(sourceArray: bytes, destinationArray: header.SFRD, sourceIndex: header.HL, destinationIndex: 0, length: header.FDL); " +
+                    "\nДдлина источника sourceArray: {sourceArrayLength};" +
+                    "\nДлина приемника destinationArray {destinationArrayLength};" +
+                    "\nНачальный индекс источника {sourceIndex};" +
+                    "\nНачальный индекс приемника {destinationIndex};" +
+                    "\nКопируемых элементов length: {lengthToCopy}",
+                    bytes.Length,
+                    header.HeaderBytes.Length,
+                    header.HL,
+                    0,
+                    header.FDL);
+
+                    // Выкидываем исключение дальше.
+                    throw new SystemException();
+                }
 
                 header.SFRCS = BitConverter.ToUInt16(bytes, header.HL + header.FDL);
-                Log.Verbose("\tCRC данных SFRCS = {ServiceFrameCRC}", header.SFRCS);
+                Log.Verbose("SFRD Check Sum     SFRCS: {SFRCS}", header.SFRCS);
+
             }
 
             return header;
@@ -159,10 +194,10 @@ namespace EGTS.Helpers
         private Types.SFRD ReadSFRD(byte packetType, byte[] sfrdBytes)
         {
             var currMethodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
-            Log.Debug("Вызов PacketConverter.ReadSFRD(packetType={PacketType}, sfrdBytes={SFRD})", packetType, sfrdBytes);
+            Log.Debug("Чтение данных уровня услуг. Вызов PacketConverter.ReadSFRD(byte, byte[])");
 
             var sfrd = new Types.SFRD();
-            
+
             switch (packetType)
             {
                 case 0:
@@ -217,7 +252,7 @@ namespace EGTS.Helpers
         /// <param name="startIndex">Индекс первго байта структуры SDR.</param>
         private void ReadSDR(Packet packet, byte[] sfrdBytes, int startIndex)
         {
-            Log.Debug("Вызов PacketConverter.ReadSDR(packet={Packet}, sfrdBytes={SFRD}, startIndex={SFRDOffset})", packet, sfrdBytes, startIndex);
+            Log.Debug("Чтение SDR. Вызов PacketConverter.ReadSDR(). Позиция первой записи: {SFRDOffset})", packet, sfrdBytes, startIndex);
             int bytesRead = 0;
             int firstRecordIndex = startIndex;
 
@@ -226,7 +261,7 @@ namespace EGTS.Helpers
                 // Смещение индекса относительно firstRecordIndex. 
                 // firstRecordIndex будет сдвигаться в конце цикла.
                 int currOffset = 0;
-                
+
                 // Длина поля RD
                 ushort rl = BitConverter.ToUInt16(sfrdBytes, firstRecordIndex + currOffset);  // +2 bytes
                 Log.Verbose("\tДлина данных записи RL={RecordLength}; текущее смещение {CurrentOffset}, смещение от начала {TotalOffset}", rl, currOffset, firstRecordIndex + currOffset);
@@ -308,7 +343,7 @@ namespace EGTS.Helpers
                 rec.ObjectID = oid;
                 rec.EventID = evid;
                 rec.Group = grp;
-                rec.Time = new DateTime(2010, 1, 1, 0, 0, 0,DateTimeKind.Utc).AddSeconds(tm);
+                rec.Time = new DateTime(2010, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(tm);
                 rec.SourceService = (Types.Service)sst;
                 rec.SourceServiceOnDevice = ssod;
                 rec.RecipientService = (Types.Service)rst;
@@ -339,61 +374,61 @@ namespace EGTS.Helpers
         private void ParseServiceDataRecords(ref byte[] data)
         {
             throw new System.NotImplementedException();
-            
+
         }
 
-    //    private void ParseRecord(ref byte[] data, int firstByte, ref ServiceDataRecord record)
-      //  {
-            //throw new System.NotImplementedException();
-            //int bytesRead = 0;
+        //    private void ParseRecord(ref byte[] data, int firstByte, ref ServiceDataRecord record)
+        //  {
+        //throw new System.NotImplementedException();
+        //int bytesRead = 0;
 
-            //while (bytesRead != record.RecordLength)
-            //{
-            //    ServiceDataSubrecord subrecord = new ServiceDataSubrecord
-            //    {
-            //        Type = (SubrecordType)data[firstByte + 0],
-            //        Length = BitConverter.ToUInt16(data, firstByte + 1)
-            //    };
+        //while (bytesRead != record.RecordLength)
+        //{
+        //    ServiceDataSubrecord subrecord = new ServiceDataSubrecord
+        //    {
+        //        Type = (SubrecordType)data[firstByte + 0],
+        //        Length = BitConverter.ToUInt16(data, firstByte + 1)
+        //    };
 
-            //    subrecordParsers.TryGetValue(subrecord.Type, out SubrecordParserDel parser);
-            //    parser?.Invoke(ref data, (firstByte + 3), ref subrecord);
+        //    subrecordParsers.TryGetValue(subrecord.Type, out SubrecordParserDel parser);
+        //    parser?.Invoke(ref data, (firstByte + 3), ref subrecord);
 
-            //    record.RecordData.Add(subrecord);
+        //    record.RecordData.Add(subrecord);
 
-            //    bytesRead = (bytesRead + subrecord.Length + 3);
-            //    firstByte += (subrecord.Length + 3);
-            //}
+        //    bytesRead = (bytesRead + subrecord.Length + 3);
+        //    firstByte += (subrecord.Length + 3);
+        //}
         //}
 
         //private void ParsePosDataSubrecord(ref byte[] data, int firstByte, ref ServiceDataSubrecord subrecord)
         //{
-          //  throw new System.NotImplementedException();
-            //    Data.ServiceLayer.TeledataService.PosDataSubrecord posData = new Data.ServiceLayer.TeledataService.PosDataSubrecord();
+        //  throw new System.NotImplementedException();
+        //    Data.ServiceLayer.TeledataService.PosDataSubrecord posData = new Data.ServiceLayer.TeledataService.PosDataSubrecord();
 
-            //    byte flags = data[firstByte + 12];  // 12
-            //    posData.NTM = BitConverter.ToUInt32(data, firstByte + 0);   // 0-3
-            //    posData.Latitude = (float)BitConverter.ToUInt32(data, firstByte + 4) * 90 / 0xFFFFFFFF * ((((PosDataFlags)flags & PosDataFlags.LAHS) == PosDataFlags.LAHS) ? -1 : 1);   // 4-7
-            //    posData.Longitude = (float)BitConverter.ToUInt32(data, firstByte + 8) * 180 / 0xFFFFFFFF * ((((PosDataFlags)flags & PosDataFlags.LOHS) == PosDataFlags.LOHS) ? -1 : 1); // 8-11
+        //    byte flags = data[firstByte + 12];  // 12
+        //    posData.NTM = BitConverter.ToUInt32(data, firstByte + 0);   // 0-3
+        //    posData.Latitude = (float)BitConverter.ToUInt32(data, firstByte + 4) * 90 / 0xFFFFFFFF * ((((PosDataFlags)flags & PosDataFlags.LAHS) == PosDataFlags.LAHS) ? -1 : 1);   // 4-7
+        //    posData.Longitude = (float)BitConverter.ToUInt32(data, firstByte + 8) * 180 / 0xFFFFFFFF * ((((PosDataFlags)flags & PosDataFlags.LOHS) == PosDataFlags.LOHS) ? -1 : 1); // 8-11
 
-            //    posData.Valid = ((PosDataFlags)flags & PosDataFlags.VLD) == PosDataFlags.VLD;
-            //    posData.Actual = ((PosDataFlags)flags & PosDataFlags.BB) != PosDataFlags.BB;
-            //    posData.Moving = ((PosDataFlags)flags & PosDataFlags.MV) == PosDataFlags.MV;
+        //    posData.Valid = ((PosDataFlags)flags & PosDataFlags.VLD) == PosDataFlags.VLD;
+        //    posData.Actual = ((PosDataFlags)flags & PosDataFlags.BB) != PosDataFlags.BB;
+        //    posData.Moving = ((PosDataFlags)flags & PosDataFlags.MV) == PosDataFlags.MV;
 
-            //    posData.Speed = (ushort)(BitConverter.ToUInt16(new byte[] { data[firstByte + 13], (byte)(data[firstByte + 14] & 0x3F) }, 0) / 10); // 13-14
-            //    posData.Direction = BitConverter.ToUInt16(new byte[] { data[firstByte + 15], (byte)((data[firstByte + 14] & 0x80) >> 7) }, 0); // 15
+        //    posData.Speed = (ushort)(BitConverter.ToUInt16(new byte[] { data[firstByte + 13], (byte)(data[firstByte + 14] & 0x3F) }, 0) / 10); // 13-14
+        //    posData.Direction = BitConverter.ToUInt16(new byte[] { data[firstByte + 15], (byte)((data[firstByte + 14] & 0x80) >> 7) }, 0); // 15
 
-            //    posData.Odometer = (float)BitConverter.ToUInt32(new byte[] { data[firstByte + 16], data[firstByte + 17], data[firstByte + 18], 0 }, 0) / 10;    // 16-18
+        //    posData.Odometer = (float)BitConverter.ToUInt32(new byte[] { data[firstByte + 16], data[firstByte + 17], data[firstByte + 18], 0 }, 0) / 10;    // 16-18
 
-            //    posData.DigitalInputs = data[firstByte + 19];   // 19
-            //    posData.Source = data[firstByte + 20];  // 20
+        //    posData.DigitalInputs = data[firstByte + 19];   // 19
+        //    posData.Source = data[firstByte + 20];  // 20
 
-            //    if (((PosDataFlags)flags & PosDataFlags.ALTE) == PosDataFlags.ALTE)
-            //    {
-            //        posData.Altitude = BitConverter.ToInt32(new byte[] { data[firstByte + 21], data[firstByte + 22], data[firstByte + 23], 0 }, 0) * (((data[firstByte + 14] & 0x40) == 0x40) ? -1 : 1);    //21-23
-            //    }
+        //    if (((PosDataFlags)flags & PosDataFlags.ALTE) == PosDataFlags.ALTE)
+        //    {
+        //        posData.Altitude = BitConverter.ToInt32(new byte[] { data[firstByte + 21], data[firstByte + 22], data[firstByte + 23], 0 }, 0) * (((data[firstByte + 14] & 0x40) == 0x40) ? -1 : 1);    //21-23
+        //    }
 
-            //    subrecord.Data = posData;
-      //  }
+        //    subrecord.Data = posData;
+        //  }
 
 
         #endregion
