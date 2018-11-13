@@ -4,6 +4,7 @@ using Egts.Data.ServiceLayer;
 using Egts.Data.ServiceLayer.TeledataService;
 using Egts.Processing;
 using System;
+using Serilog;
 
 namespace Telematics.BuisnesLogic
 {
@@ -26,6 +27,9 @@ namespace Telematics.BuisnesLogic
         {
             if (record.RecipientService != Service.EGTS_TELEDATA_SERVICE)
             {
+                Log.Debug("В записи {RecordNumber} указан неподдерживаемый сервис {RecipientService}. Результат процессинга {ProcessingCode}"
+                    , record.RecordNumber, record.RecipientService, ProcessingCode.EGTS_PC_SRVC_NFOUND);
+
                 return ProcessingCode.EGTS_PC_SRVC_NFOUND;
             }
 
@@ -33,6 +37,7 @@ namespace Telematics.BuisnesLogic
             {
                 if (subrecord.Type != SubrecordType.EGTS_SR_POS_DATA)
                 {
+                    Log.Debug("Не задан обработчик для подзаписи типа {SubrecordType}", subrecord.Type);
                     continue;
                 }
 
@@ -51,29 +56,19 @@ namespace Telematics.BuisnesLogic
                         Valid = pos.Valid,
                         Moving = pos.Moving
                     };
-#if DEBUG
-                    System.Console.Write("RECORD #{0}", record.RecordNumber);
-                    System.Console.Write("\tTIME={0}; ID={1}; LAT={2}; LON={3}; DIR={4}; SPD={5}; ODM={6}; VLD={7}; ACT={8}; MOV={9}",
-                        data.Time, data.Id, data.Lat, data.Lon, data.Direction, data.Speed, data.Odometer, data.Valid, data.Actual, data.Moving);
-                    
 
-#endif
+                    Log.Information("Получены координаты по трекеру {ObjectId} от {NavigationTime}. Номер записи {RecordNumber}", data.Id, data.Time, record.RecordNumber);
+                    Log.Verbose("{@PosData}", data);
+
                     try
                     {
-                        Storage.WritePosData(record.ObjectID, data);
+                        //Storage.WritePosData(record.ObjectID, data);
                         geoService.PutPosData(data.Id, data.Time, data.Lat, data.Lon, data.Direction, data.Speed, data.Odometer, data.Valid, data.Actual, data.Moving);
-#if DEBUG
-                        System.Console.ForegroundColor = System.ConsoleColor.Green;
-                        System.Console.WriteLine("\t[ SUCCESS ]");
-                        System.Console.ForegroundColor = System.ConsoleColor.White;
-#endif                        
+                        Log.Debug("Данные отправлены в сервис.");
                     }
                     catch (System.Exception e)
                     {
-                        System.Console.ForegroundColor = System.ConsoleColor.Red;
-                        System.Console.WriteLine("\t[ FAIL ]");
-                        System.Console.WriteLine(e);
-                        System.Console.ForegroundColor = System.ConsoleColor.White;
+                        Log.Error(e, "Не удалось отправить данные в сервис.");
                     }
                 }
             }

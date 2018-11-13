@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Text;
 using System.Threading;
+using Serilog;
 
 namespace Telematics.Networking
 {
@@ -34,8 +35,10 @@ namespace Telematics.Networking
         {
             Writer.Write(msg);
             Writer.Flush();
-            Console.WriteLine("Sent to {0}: {1} bytes", Client.Client.RemoteEndPoint.ToString(), msg.Length);
-            Console.WriteLine();
+
+            Log.Verbose("{ResponseData}", msg);
+            Log.Information("Отправлено {bytesSent} байт для {clientip}", msg.Length, Client.Client.RemoteEndPoint.ToString());
+            
         }
 
         public byte[] ReceiveMessage()
@@ -44,8 +47,10 @@ namespace Telematics.Networking
             byte[] readBuffer = Reader.ReadBytes(BytesReceived);
             if (BytesReceived > 0)
             {
-                Console.WriteLine("Recieved from {0}: {1} bytes", Client.Client.RemoteEndPoint.ToString(), BytesReceived);
+                Log.Information("Получено {bytesReceived} байт от {clientip}", BytesReceived, Client.Client.RemoteEndPoint.ToString());
+                Log.Verbose("{IncomingData}", readBuffer);
             }
+            
             return readBuffer;
         }
 
@@ -54,8 +59,8 @@ namespace Telematics.Networking
             Client = ThreadListener.AcceptTcpClient();
             Stream = Client.GetStream();
             connections++;
-            Console.WriteLine("New connection accepted: {0} active connections", connections.ToString());
-            Console.WriteLine();
+
+            Log.Information("Принято новое соединение. Активных подключений: {ActiveConnections}", connections);
         }
 
         private void Process()
@@ -73,13 +78,9 @@ namespace Telematics.Networking
                     }
                     catch(Exception e)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\t[ FAIL ]");
-                        Console.WriteLine(e);
-                        Console.ForegroundColor = ConsoleColor.White;
-
+                        Log.Error(e, "Ошибка обработки данных. Входящие данные:{recieveBuffer}, Байт принято {BytesReceived}", recieveBuffer, BytesReceived);
                         File.WriteAllBytes(
-                            path: $"dumps\\fail_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.TimeOfDay.Hours}_{DateTime.Now.TimeOfDay.Minutes}_{DateTime.Now.TimeOfDay.Seconds}.bin",
+                            path: $"logs\\dumps\\fail_{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}_{DateTime.Now.TimeOfDay.Hours}{DateTime.Now.TimeOfDay.Minutes}{DateTime.Now.TimeOfDay.Seconds}.bin",
                             bytes: recieveBuffer);
 
                         Disconnect();
@@ -100,8 +101,7 @@ namespace Telematics.Networking
             Stream.Close();
             Client.Close();
             connections--;
-            Console.WriteLine("Client disconnected: {0} active connections", connections);
-            Console.WriteLine();
+            Log.Warning("Разрыв соединения {clientip}. Активных подключений: {ActiveConnections}", Client.Client.RemoteEndPoint.ToString(), connections);
         }
     }
 }

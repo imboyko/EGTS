@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 using System.Text;
+using Serilog;
 
 namespace Telematics.Networking
 {
@@ -27,9 +28,18 @@ namespace Telematics.Networking
         public void Start()
         {
             listener = new TcpListener(IPAddress.Any, Port);
-            listener.Start();
-            Console.WriteLine(String.Format("Listening to {0}:{1}", IPAddress.Any.ToString(), Port));
+            try
+            { 
+                listener.Start();
+                Log.Information("Начато прослушивание порта {port} по адресу {serverip}", Port, IPAddress.Any.ToString());
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, "Не удалось запустить сервер на порту {port} по адресу {serverip}", Port, IPAddress.Any.ToString());
+                throw e;
+            }
         }
+
         public void Stop()
         {
             listener.Stop();

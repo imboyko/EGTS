@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace Egts
 {
@@ -23,16 +24,21 @@ namespace Egts
             Builder.BuildFromBytes(data);
             EgtsPacket inPacket = Builder.GetPacket();
 
+            Log.Debug("Получен пакет EGTS {@packet}", inPacket);
             ProcessingResult procResult = new ProcessingResult();
 
             ProcessingCode code = CheckPacket(inPacket, data);
+
             if (code == ProcessingCode.EGTS_PC_OK)
             {
+                Log.Debug("Результат проверки полученного пакета #{PacketId} - {ProcessingCode}", inPacket.Header.PID, code);
                 inPacket.SetProcessor(PacketProcessor);
                 inPacket.Process(ref procResult);
+
             }
             else
             {
+                Log.Warning("Результат проверки полученного пакета #{PacketId} - {ProcessingCode}", inPacket.Header.PID, code);
                 procResult.PacketId = inPacket.Header.PID;
                 procResult.Result = code;
             }
