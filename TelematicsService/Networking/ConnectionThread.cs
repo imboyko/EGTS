@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Net;
 using System.Net.Sockets;
 using System.IO;
-using System.Text;
-using System.Threading;
 using Serilog;
 
 namespace Telematics.Networking
@@ -14,94 +11,108 @@ namespace Telematics.Networking
         public Egts.EgtsProcessor Context { get; set; }
         private TcpClient Client { get; set; }
         private NetworkStream Stream { get; set; }
-        private BinaryWriter Writer { get; set; }
-        private BinaryReader Reader { get; set; }
         private int BytesReceived { get; set; }
-        private static int connections = 0;
+        private static int _Connections = 0;
 
         public void HandleConnection()
         {
             Connect();
-
-            Writer = new BinaryWriter(Client.GetStream());
-            Reader = new BinaryReader(Client.GetStream());
-
             Process();
-
             Disconnect();
-        }
-
-        public void SendMessage(byte[] msg)
-        {
-            Writer.Write(msg);
-            Writer.Flush();
-
-            Log.Verbose("{ResponseData}", msg);
-            Log.Information("Отправлено {bytesSent} байт для {clientip}", msg.Length, Client.Client.RemoteEndPoint.ToString());
-            
-        }
-
-        public byte[] ReceiveMessage()
-        {
-
-            BytesReceived = Client.Available;
-            byte[] readBuffer = Reader.ReadBytes(BytesReceived);
-            if (BytesReceived > 0)
-            {
-                Log.Information("Получено {bytesReceived} байт от {clientip}", BytesReceived, Client.Client.RemoteEndPoint.ToString());
-                Log.Verbose("{IncomingData}", readBuffer);
-            }
-            
-            return readBuffer;
         }
 
         private void Connect()
         {
             Client = ThreadListener.AcceptTcpClient();
+            Client.ReceiveTimeout = 60000;  // 60 секунд таймаут получения
+            Client.SendTimeout = 30000; // 30 секунд таймаут отправки
+
             Stream = Client.GetStream();
-            connections++;
+            _Connections++;
 
-            Log.Information("Принято новое соединение. Активных подключений: {ActiveConnections}", connections);
+            Log.Information("Принято новое соединение от {clientip}. Активно: {ActiveConnections}", Client.Client.RemoteEndPoint.ToString(), _Connections);
         }
-
         private void Process()
         {
             while (Client.Connected)
             {
-                byte[] recieveBuffer = ReceiveMessage();
+                byte[] recieveBuffer = new byte[0];
 
-                if (BytesReceived != 0)
+                try
                 {
-                    try
-                    {
-                        byte[] sendBuffer = Context.ProcessData(recieveBuffer);
-                        SendMessage(sendBuffer);
-                    }
-                    catch(Exception e)
-                    {
-                        Log.Error(e, "Ошибка обработки данных. Входящие данные:{recieveBuffer}, Байт принято {BytesReceived}", recieveBuffer, BytesReceived);
-                        File.WriteAllBytes(
-                            path: $"logs\\dumps\\fail_{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}_{DateTime.Now.TimeOfDay.Hours}{DateTime.Now.TimeOfDay.Minutes}{DateTime.Now.TimeOfDay.Seconds}.bin",
-                            bytes: recieveBuffer);
+                    recieveBuffer = ReceiveMessage();
 
-                        Disconnect();
+                    if (BytesReceived == 0)
+                        // сокет закрыт.
+                        break;
 
-                    }
+                    Log.Debug("Получено {bytesReceived} байт от {clientip}", recieveBuffer.Length, Client.Client.RemoteEndPoint.ToString());
+                    Log.Verbose("{IncomingData}", recieveBuffer);
+
+                    byte[] sendBuffer = Context.ProcessData(recieveBuffer);
+                    SendMessage(sendBuffer);
+
                 }
-                else
+                catch (SocketException e)
                 {
-                    Thread.Sleep(1000);
+                    Log.Error(e, "Ошибка сети при получении данных от {clientip}", Client.Client.RemoteEndPoint.ToString());
+                    break;  // выход из цикла, сокет закрыт
                 }
+                catch (IOException e)
+                {
+                    Log.Error(e, "Ошибка потока при получении данных от {clientip}", Client.Client.RemoteEndPoint.ToString());
+                    break;  // выход из цикла, сокет закрыт
+                }
+                catch (Exception e)
+                {
+                    string dumpFileName = $"fail_{DateTime.Now.Year}{DateTime.Now.Month}{DateTime.Now.Day}_{DateTime.Now.TimeOfDay.Hours}{DateTime.Now.TimeOfDay.Minutes}{DateTime.Now.TimeOfDay.Seconds}.bin";
+                    Log.Error(e, "Ошибка получении данных от {clientip}. Дамп входящих данных записан в " + dumpFileName, Client.Client.RemoteEndPoint.ToString());
+                    File.WriteAllBytes($"logs\\dumps\\{dumpFileName}", recieveBuffer);
+                };
             }
-        }
 
+            Log.Debug(
+                "Завершение взаимодействия с {clientip}: Client.Connected={ClientConnected}, Stream.CanRead={StreamCanRead}, BytesReceived={BytesReceived}",
+                Client.Client.RemoteEndPoint.ToString(), Client.Connected, Stream.CanRead, BytesReceived);
+
+        }
+        private void SendMessage(byte[] msg)
+        {
+            Stream.Write(msg, 0, msg.Length);
+
+            Log.Debug("Отправлено {bytesSent} байт для {clientip}", msg.Length, Client.Client.RemoteEndPoint.ToString());
+            Log.Verbose("{ResponseData}", msg);
+
+        }
+        private byte[] ReceiveMessage()
+        {
+            BytesReceived = 0;
+
+            // Если сокет закрыт, то вернем пустой массив.
+            if (!Stream.CanRead)
+                return new byte[0];
+
+
+            var mStream = new MemoryStream();
+
+            var buffer = new byte[Client.ReceiveBufferSize];
+            int numberOfBytesRead = 0;
+
+            do
+            {
+                numberOfBytesRead = Stream.Read(buffer, 0, buffer.Length);
+                mStream.Write(buffer, 0, numberOfBytesRead);
+
+                BytesReceived += numberOfBytesRead;
+
+            } while (Stream.DataAvailable);
+
+            return mStream.GetBuffer();
+        }
         private void Disconnect()
         {
-            connections--;
-            Log.Warning("Разрыв соединения. Активных подключений: {ActiveConnections}", connections);
-            Reader.Close();
-            Writer.Close();
-            Stream.Close();
+            _Connections--;
+            Log.Warning("Разрыв соединения c {clientip}. Активных подключений: {ActiveConnections}", Client.Client.RemoteEndPoint.ToString(), _Connections);
             Client.Close();
         }
     }

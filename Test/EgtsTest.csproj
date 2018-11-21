@@ -140,7 +140,7 @@
     <None Include="Probes\33.dump">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Probes\sevas.bin">
+    <None Include="Probes\test.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
