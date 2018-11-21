@@ -97,42 +97,33 @@ namespace Egts.Data
 
     public enum HeaderFlags : byte
     {
-        bit0 = (1 << 0),
-        bit1 = (1 << 1),
-        bit2 = (1 << 2),
-        bit3 = (1 << 3),
-        bit4 = (1 << 4),
-        bit5 = (1 << 5),
-        bit6 = (1 << 6),
-        bit7 = (1 << 7),
-
-        PR = bit0 | bit1,
-        CMP = bit2,
-        RTE = bit5,
-        PRF = bit6 | bit7
+        PR =  0b00000011,    // bit0 | bit1,
+        CMP = 0b00000100,   // bit2,
+        RTE = 0b00100000,   // bit5,
+        PRF = 0b11000000    // bit6 | bit7
     }
 
     public enum RecordFlags : byte
     {
-        OBFE = (1 << 0),
-        EVFE = (1 << 1),
-        TMFE = (1 << 2),
-        RPP = (1 << 3) | (1 << 4),
-        GRP = (1 << 5),
-        RSOD = (1 << 6),
-        SSOD = (1 << 7)
+        OBFE = 0b00000001,  // (1 << 0),
+        EVFE = 0b00000010,  // (1 << 1),
+        TMFE = 0b00000100,  // (1 << 2),
+        RPP =  0b00011000,  // (1 << 3) | (1 << 4),
+        GRP =  0b00100000,  // (1 << 5),
+        RSOD = 0b01000000,  // (1 << 6),
+        SSOD = 0b10000000   // (1 << 7)
     }
 
     public enum PosDataFlags : byte
     {
-        VLD = (1 << 0),
-        FIX = (1 << 1),
-        CS = (1 << 2),
-        BB = (1 << 3),
-        MV = (1 << 4),
-        LAHS = (1 << 5),
-        LOHS = (1 << 6),
-        ALTE = (1 << 7)
+        VLD =  0b00000001,  // (1 << 0),
+        FIX =  0b00000010,  // (1 << 1),
+        CS =   0b00000100,  // (1 << 2),
+        BB =   0b00001000,  // (1 << 3),
+        MV =   0b00010000,  // (1 << 4),
+        LAHS = 0b00100000,  // (1 << 5),
+        LOHS = 0b01000000,  // (1 << 6),
+        ALTE = 0b10000000   // (1 << 7)
     }
 }
 

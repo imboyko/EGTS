@@ -43,6 +43,7 @@ namespace Telematics.Networking
 
         public byte[] ReceiveMessage()
         {
+
             BytesReceived = Client.Available;
             byte[] readBuffer = Reader.ReadBytes(BytesReceived);
             if (BytesReceived > 0)
@@ -96,12 +97,12 @@ namespace Telematics.Networking
 
         private void Disconnect()
         {
+            connections--;
+            Log.Warning("Разрыв соединения. Активных подключений: {ActiveConnections}", connections);
             Reader.Close();
             Writer.Close();
             Stream.Close();
             Client.Close();
-            connections--;
-            Log.Warning("Разрыв соединения {clientip}. Активных подключений: {ActiveConnections}", Client.Client.RemoteEndPoint.ToString(), connections);
         }
     }
 }
