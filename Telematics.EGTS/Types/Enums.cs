@@ -4,7 +4,7 @@ namespace Telematics.EGTS.Types
     /// <summary>
     /// Тип пакета Транспортного Уровня.
     /// </summary>
-    enum PacketType : byte
+    public enum PacketType : byte
     {
         /// <summary>
         /// Подтверждение на пакет Транспортного Уровня
@@ -29,7 +29,7 @@ namespace Telematics.EGTS.Types
     /// Пакеты сообщений об ошибках (EGTS_PC_DECRYPT_ERROR, EGTS_PC_UNS_PROTOCOL, EGTS_PC_INC_DATAFORM , EGTS_PC_DATACRC_ERROR , EGTS_PC_INC_HEADERFORM , EGTS_PC_HEADERCRC_ERROR) 
     /// предназначены для целей тестирования оборудования и в рабочей версии ПО сервера и терминала могут быть исключены.
     /// </remarks>
-    enum ProcessingCode : byte
+    public enum ProcessingCode : byte
     {
         /// <summary>
         /// Успешно обработано
@@ -248,7 +248,7 @@ namespace Telematics.EGTS.Types
     /// <summary>
     /// Список Сервисов, поддерживаемых Протоколом.
     /// </summary>
-    enum ServiсeType : byte
+    public enum ServiсeType : byte
     {
         /// <summary>
         /// Данный тип сервиса применяется для осуществления процедуры аутентификации АС (авторизуемой ТП) на авторизующей ТП. 
@@ -273,7 +273,7 @@ namespace Telematics.EGTS.Types
         EGTS_ECALL_SERVICE = 10
     }
 
-    enum SubrecordType : byte
+    public enum SubrecordType : byte
     {
         /// <summary>
         /// Подзапись применяется для осуществления подтверждения процесса обработки записи Протокола Уровня Поддержки Услуг. 
@@ -394,4 +394,30 @@ namespace Telematics.EGTS.Types
         #endregion
     }
 
+    /// <summary>
+    /// Текущее состояние сервиса
+    /// </summary>
+    public enum ServiceStatement : byte
+    {
+        /// <summary>
+        /// Сервис в рабочем состоянии и разрешен к использованию
+        /// </summary>
+        EGTS_SST_IN_SERVICE = 0,
+        /// <summary>
+        /// Сервис в нерабочем состоянии (выключен)
+        /// </summary>
+        EGTS_SST_OUT_OF_SERVICE = 128,
+        /// <summary>
+        /// Сервис запрещён для использования
+        /// </summary>
+        EGTS_SST_DENIED = 129,
+        /// <summary>
+        /// Сервис не настроен
+        /// </summary>
+        EGTS_SST_NO_CONF = 130,
+        /// <summary>
+        /// Сервис временно недоступен
+        /// </summary>
+        EGTS_SST_TEMP_UNAVAIL = 131,
+    }
 }
