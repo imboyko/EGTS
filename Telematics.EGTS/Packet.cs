@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,6 +13,62 @@ namespace Telematics.EGTS
 
     class Packet
     {
+        #region Construstors
+        /// <summary>
+        /// Конструктор пакета указанного типа.
+        /// </summary>
+        /// <param name="type">Тип пакета.</param>
+        public Packet(Types.PacketType type)
+        {
+            _PT = (byte)type;
+
+            // Инициализируем данные прикладного уровня.
+            switch (type)
+            {
+                case Types.PacketType.EGTS_PT_APPDATA:
+                    _Data = new Types.EGTS_PT_APPDATA();
+                    break;
+                case Types.PacketType.EGTS_PT_RESPONSE:
+                    _Data = new Types.EGTS_PT_RESPONSE();
+                    break;
+                case Types.PacketType.EGTS_PT_SIGNED_APPDATA:
+                    _Data = new Types.EGTS_PT_SIGNED_APPDATA();
+                    break;
+            };
+        }
+        /// <summary>
+        /// Конструктор пакета из двоичных данных.
+        /// </summary>
+        /// <param name="stream">Двоичные данные пакета</param>
+        public Packet(Stream stream)
+        {
+            using (var reader = new BinaryReader(stream))
+            {
+                _PRV = reader.ReadByte();
+                _SKID = reader.ReadByte();
+                _Flags = reader.ReadByte();
+                _HL = reader.ReadByte();
+                _HE = reader.ReadByte();
+                _FDL = reader.ReadByte();
+                _PID = reader.ReadByte();
+                _PT = reader.ReadByte();
+                // Если Route, то считываем опциональные поля.
+                if (Route)
+                {
+                    _PRA = reader.ReadUInt16();
+                    _RCA = reader.ReadUInt16();
+                    _TTL = reader.ReadByte();
+                }
+                // TODO: Считывание данных прикладного уровня.
+                //if (_FDL > 0)
+                //{
+                //    _Data = new PacketData(stream);
+                //    _SFRCS = reader.ReadUInt16();
+                //}
+            }
+        }
+        #endregion
+
         #region Properties
         /// <summary>
         /// Параметр определяет версию используемой структуры заголовка и должен содержать значение 0x01.
@@ -140,7 +197,7 @@ namespace Telematics.EGTS
         private byte _HE;
         private ushort _FDL;
         private ushort _PID;
-        private byte _PT;
+        private readonly byte _PT;
         private ushort _PRA;
         private ushort _RCA;
         private byte _TTL;
