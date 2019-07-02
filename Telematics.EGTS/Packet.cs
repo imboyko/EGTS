@@ -11,7 +11,7 @@ namespace Telematics.EGTS
         ushort Identifier { get; set; }
     }
 
-    class Packet
+    public class Packet
     {
         #region Construstors
         /// <summary>
