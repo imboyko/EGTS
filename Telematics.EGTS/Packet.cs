@@ -91,7 +91,7 @@ namespace Telematics.EGTS
         /// </summary>
         public byte Prefix
         {
-            get => (byte)(_Flags & 0b11000000 >> 6);
+            get => (byte)((_Flags & 0b11000000) >> 6);
             set
             {
                 if (value != 0)
@@ -106,7 +106,7 @@ namespace Telematics.EGTS
         public bool Route
         {
             get => (_Flags & 0b00100000) == 0b00100000;
-            set => _Flags = (byte)((value ? 0b001000000 : 0) | (_Flags & 0b11011111));
+            set => _Flags = (byte)((value ? 0b00100000 : 0) | (_Flags & 0b11011111));
         }
         /// <summary>
         /// Битовое поле определяет код алгоритма, используемый для шифрования данных из поля SFRD. 
@@ -115,7 +115,7 @@ namespace Telematics.EGTS
         /// </summary>
         public byte EncryptionAlgorithm
         {
-            get => (byte)(_Flags & 0b00011000 >> 3);
+            get => (byte)((_Flags & 0b00011000) >> 3);
             private set
             {
                 if (value > 3)
