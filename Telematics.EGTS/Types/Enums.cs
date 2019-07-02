@@ -2,6 +2,32 @@
 namespace Telematics.EGTS.Types
 {
     /// <summary>
+    /// Приоритет обработки.
+    /// </summary>
+    public enum Priority : byte
+    {
+        /// <summary>
+        /// Наивысший приоритет.
+        /// </summary>
+        Highest,
+
+        /// <summary>
+        /// Высокий приоритет.
+        /// </summary>
+        High,
+
+        /// <summary>
+        /// Средний приоритет.
+        /// </summary>
+        Normal,
+
+        /// <summary>
+        /// Низкий приоритет.
+        /// </summary>
+        Low
+    }
+
+    /// <summary>
     /// Тип пакета Транспортного Уровня.
     /// </summary>
     public enum PacketType : byte
