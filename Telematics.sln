@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28917.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telematics.EGTS", "Telematics.EGTS\Telematics.EGTS.csproj", "{8608844D-EADA-4506-B734-342F57086E13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telematics.EGTS", "Telematics.EGTS\Telematics.EGTS.csproj", "{8608844D-EADA-4506-B734-342F57086E13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telematics.Core", "Telematics.Core\Telematics.Core.csproj", "{70919D66-EE36-4AA5-BFDC-0FA7C726DF22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telematics.Core", "Telematics.Core\Telematics.Core.csproj", "{70919D66-EE36-4AA5-BFDC-0FA7C726DF22}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telematics.WindowsServiceHost", "Telematics.WindowsServiceHost\Telematics.WindowsServiceHost.csproj", "{072FF306-5A63-449E-AFAF-F07144BA5FA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telematics.ConsoleHost", "Telematics.ConsoleHost\Telematics.ConsoleHost.csproj", "{0139B81A-9256-4641-9056-D6C4975B26A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telematics.ConsoleHost", "Telematics.ConsoleHost\Telematics.ConsoleHost.csproj", "{0139B81A-9256-4641-9056-D6C4975B26A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telematics.EGTS.Tests", "Tests\Telematics.EGTS.Tests\Telematics.EGTS.Tests.csproj", "{AE7B68B9-72FB-4011-A87B-0804F787BEA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{0139B81A-9256-4641-9056-D6C4975B26A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0139B81A-9256-4641-9056-D6C4975B26A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0139B81A-9256-4641-9056-D6C4975B26A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE7B68B9-72FB-4011-A87B-0804F787BEA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE7B68B9-72FB-4011-A87B-0804F787BEA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE7B68B9-72FB-4011-A87B-0804F787BEA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE7B68B9-72FB-4011-A87B-0804F787BEA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
