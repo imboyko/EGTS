@@ -49,8 +49,8 @@ namespace Telematics.EGTS
                 _Flags = reader.ReadByte();
                 _HL = reader.ReadByte();
                 _HE = reader.ReadByte();
-                _FDL = reader.ReadByte();
-                _PID = reader.ReadByte();
+                _FDL = reader.ReadUInt16();
+                _PID = reader.ReadUInt16();
                 _PT = reader.ReadByte();
                 // Если Route, то считываем опциональные поля.
                 if (Route)
