@@ -6,11 +6,12 @@ namespace Telematics.EGTS.Tests
 {
     public class PacketTests
     {
-        [Theory(DisplayName = "Создание пакета с указанием PacketType")]
+        #region ctor tests
+        [Theory]
         [InlineData(Types.PacketType.EGTS_PT_APPDATA)]
         [InlineData(Types.PacketType.EGTS_PT_RESPONSE)]
         [InlineData(Types.PacketType.EGTS_PT_SIGNED_APPDATA)]
-        public void Constructor_ByType_Passing(Types.PacketType type)
+        public void Should_Pass_ContructorByPacketType(Types.PacketType type)
         {
             var packet = new Packet(type);
 
@@ -23,25 +24,13 @@ namespace Telematics.EGTS.Tests
             Assert.False(packet.Compressed);
             Assert.Equal(Types.Priority.Highest, packet.Priority);
         }
+        #endregion
 
-
-        [Fact(DisplayName = "Установка префикса больше 0 недопустима.")]
-        public void Set_Prefix_1_Throws_ArgumentOutOfRangeException()
-        {
-            var packetType = Types.PacketType.EGTS_PT_APPDATA;
-            var packet = new Packet(packetType);
-
-            Assert.Throws(
-                (new ArgumentOutOfRangeException()).GetType(), 
-                () => packet.Prefix = 1);
-
-
-        }
-
-        [Theory(DisplayName = "Установка свойства Route")]
+        #region Properties tests
+        [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void SetProperty_Route_AffectPassing(bool value)
+        public void Should_Pass_SetRouteValue(bool value)
         {
             var packetType = Types.PacketType.EGTS_PT_APPDATA;
             var packet = new Packet(packetType)
@@ -57,12 +46,12 @@ namespace Telematics.EGTS.Tests
             Assert.Equal(Types.Priority.Highest, packet.Priority);
         }
 
-        [Theory(DisplayName = "Установка свойства Priority")]
+        [Theory]
         [InlineData(Types.Priority.Highest)]
         [InlineData(Types.Priority.High)]
         [InlineData(Types.Priority.Normal)]
         [InlineData(Types.Priority.Low)]
-        public void SetProperty_Priority_AffectPassing(Types.Priority value)
+        public void Should_Pass_SetPriorityValue(Types.Priority value)
         {
             var packetType = Types.PacketType.EGTS_PT_APPDATA;
             var packet = new Packet(packetType)
@@ -77,5 +66,6 @@ namespace Telematics.EGTS.Tests
             Assert.False(packet.Compressed);
             Assert.Equal(value, packet.Priority);
         }
+        #endregion
     }
 }
