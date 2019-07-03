@@ -33,6 +33,7 @@ namespace Telematics.EGTS.Tests
             byte skid = 0;
             byte flag = 0b00000000;
             byte hl = 11;
+            byte he = 11;
             ushort fdl = 0;
             ushort pid = ushort.MaxValue;
             byte pt = (byte)packetType;
@@ -40,21 +41,21 @@ namespace Telematics.EGTS.Tests
 
             // Создаем пакет без тела, только заголовок.
             var stream = new System.IO.MemoryStream(11);
-            using(var writer = new System.IO.BinaryWriter(stream))
-            {
-                writer.Write(prv);
-                writer.Write(skid);
-                writer.Write(flag);
-                writer.Write(hl);
-                writer.Write(fdl);
-                writer.Write(pid);
-                writer.Write(pt);
-                writer.Write(hcs);
+            var writer = new System.IO.BinaryWriter(stream);
+            writer.Write(prv);
+            writer.Write(skid);
+            writer.Write(flag);
+            writer.Write(hl);
+            writer.Write(he);
+            writer.Write(fdl);
+            writer.Write(pid);
+            writer.Write(pt);
+            writer.Write(hcs);
 
-                writer.Flush();
-            }
-
+            // Сброс курсора потока на начало.
+            stream.Position = 0;
             var packet = new Packet(stream);
+
 
             // Проверка созданного пакета
             Assert.Equal(prv, packet.ProtocolVersion);
