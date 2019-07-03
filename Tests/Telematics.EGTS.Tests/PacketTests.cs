@@ -24,6 +24,57 @@ namespace Telematics.EGTS.Tests
             Assert.False(packet.Compressed);
             Assert.Equal(Types.Priority.Highest, packet.Priority);
         }
+
+        [Fact]
+        public void ConstructorFromStream_Pass__AppDataPacketWithoutRoute()
+        {
+            var packetType = Types.PacketType.EGTS_PT_APPDATA;
+            byte prv = 1;
+            byte skid = 0;
+            byte flag = 0b00000000;
+            byte hl = 11;
+            ushort fdl = 0;
+            ushort pid = ushort.MaxValue;
+            byte pt = (byte)packetType;
+            byte hcs = 0;
+
+            // Создаем пакет без тела, только заголовок.
+            var stream = new System.IO.MemoryStream(11);
+            using(var writer = new System.IO.BinaryWriter(stream))
+            {
+                writer.Write(prv);
+                writer.Write(skid);
+                writer.Write(flag);
+                writer.Write(hl);
+                writer.Write(fdl);
+                writer.Write(pid);
+                writer.Write(pt);
+                writer.Write(hcs);
+
+                writer.Flush();
+            }
+
+            var packet = new Packet(stream);
+
+            // Проверка созданного пакета
+            Assert.Equal(prv, packet.ProtocolVersion);
+            Assert.Equal(skid, packet.SecurityKeyId);
+            Assert.Equal(pid, packet.PacketIdentifier);
+            Assert.Equal(packetType, packet.PacketType);
+
+            // Флаговые свойства
+            Assert.Equal(0, packet.Prefix);
+            Assert.False(packet.Route);
+            Assert.Equal(0, packet.EncryptionAlgorithm);
+            Assert.False(packet.Compressed);
+            Assert.Equal(Types.Priority.Highest, packet.Priority);
+
+            // Свойства маршрутизации
+            Assert.Equal(0, packet.PeerAddress);
+            Assert.Equal(0, packet.RecipientAddress);
+            Assert.Equal(0, packet.TTL);
+
+        }
         #endregion
 
         #region Properties tests
