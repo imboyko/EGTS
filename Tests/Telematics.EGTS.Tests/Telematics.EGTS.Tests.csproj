@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Telematics.EGTS\Telematics.EGTS.csproj" />
+    <ProjectReference Include="..\..\src\Telematics.EGTS\Telematics.EGTS.csproj" />
   </ItemGroup>
 
 </Project>
