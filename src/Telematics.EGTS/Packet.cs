@@ -5,12 +5,6 @@ using System.Text;
 
 namespace Telematics.EGTS
 {
-    interface IPacket
-    {
-        Types.PacketType Type { get; set; }
-        ushort Identifier { get; set; }
-    }
-
     public class Packet
     {
         #region Construstors
@@ -206,7 +200,5 @@ namespace Telematics.EGTS
 
         private readonly Types.IServiceData _Data;
         #endregion
-
-
     }
 }
