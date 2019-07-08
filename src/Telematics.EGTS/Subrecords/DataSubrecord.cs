@@ -4,10 +4,7 @@ using System.Text;
 
 namespace Telematics.EGTS.Types
 {
-    abstract class DataSubrecord
-    {
-        protected byte _SRT;
-    }
+    
 
     /// <summary>
     /// Подзапись применяется для осуществления подтверждения процесса обработки записи Протокола Уровня Поддержки Услуг.
