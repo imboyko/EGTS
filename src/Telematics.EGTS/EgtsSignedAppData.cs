@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Telematics.EGTS
 {
-    public partial class Packet
+    public partial class EgtsPacket
     {
         /// <summary>
         /// Пакет данного типа применяется для передачи помимо структур, содержащих информацию Уровня Поддержки Услуг, также информации о так называемой  «цифровой подписи», идентифицирующей отправителя данного пакета. 

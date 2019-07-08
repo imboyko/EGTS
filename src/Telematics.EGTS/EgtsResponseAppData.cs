@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Telematics.EGTS
 {
-    public partial class Packet
+    public partial class EgtsPacket
     {
         /// <summary>
         /// С помощью данного типа пакета осуществляется подтверждения пакета Транспортного Уровня. 

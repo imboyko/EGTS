@@ -2,7 +2,7 @@
 
 namespace Telematics.EGTS
 {
-    public partial class Packet
+    public partial class EgtsPacket
     {
         public interface IEgtsAppData : ICollection<EgtsDataRecord> { }
     }

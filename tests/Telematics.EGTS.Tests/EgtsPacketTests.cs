@@ -4,7 +4,7 @@ using Telematics.EGTS;
 
 namespace Telematics.EGTS.Tests
 {
-    public class PacketTests
+    public class EgtsPacketTests
     {
         #region ctor tests
         [Theory]
@@ -13,7 +13,7 @@ namespace Telematics.EGTS.Tests
         [InlineData(Types.PacketType.EGTS_PT_SIGNED_APPDATA)]
         public void Should_Pass_ContructorByPacketType(Types.PacketType type)
         {
-            var packet = new Packet(type);
+            var packet = new EgtsPacket(type);
 
             Assert.Equal(type, packet.PacketType);
 
@@ -54,7 +54,7 @@ namespace Telematics.EGTS.Tests
 
             // Сброс курсора потока на начало.
             stream.Position = 0;
-            var packet = new Packet(stream);
+            var packet = new EgtsPacket(stream);
 
             // Используем рефлексию для проверки корректности полей.
             var type = packet.GetType();
@@ -116,7 +116,7 @@ namespace Telematics.EGTS.Tests
         public void Should_Pass_SetRouteValue(bool value)
         {
             var packetType = Types.PacketType.EGTS_PT_APPDATA;
-            var packet = new Packet(packetType)
+            var packet = new EgtsPacket(packetType)
             {
                 Route = value
             };
@@ -137,7 +137,7 @@ namespace Telematics.EGTS.Tests
         public void Should_Pass_SetPriorityValue(Types.Priority value)
         {
             var packetType = Types.PacketType.EGTS_PT_APPDATA;
-            var packet = new Packet(packetType)
+            var packet = new EgtsPacket(packetType)
             {
                 Priority = value
             };

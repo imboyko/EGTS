@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Telematics.EGTS
 {
-    public partial class Packet
+    public partial class EgtsPacket
     {
         /// <summary>
         /// Предназначен для передачи одной или нескольких структур, содержащих информацию Протокола Уровня Поддержки Услуг

@@ -5,14 +5,14 @@ using System.Text;
 
 namespace Telematics.EGTS
 {
-    public partial class Packet
+    public partial class EgtsPacket
     {
         #region Конструкторы
         /// <summary>
         /// Конструктор пакета указанного типа.
         /// </summary>
         /// <param name="type">Тип пакета.</param>
-        public Packet(Types.PacketType type)
+        public EgtsPacket(Types.PacketType type)
         {
             _PRV = 1;
             _PT = (byte)type;
@@ -23,7 +23,7 @@ namespace Telematics.EGTS
         /// Конструктор пакета из двоичных данных.
         /// </summary>
         /// <param name="stream">Двоичные данные пакета</param>
-        public Packet(Stream stream)
+        public EgtsPacket(Stream stream)
         {
             using (var reader = new BinaryReader(stream))
             {
