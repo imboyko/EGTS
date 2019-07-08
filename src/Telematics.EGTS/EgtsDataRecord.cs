@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Telematics.EGTS.Types
+namespace Telematics.EGTS
 {
-    class DataRecord
+    public class EgtsDataRecord
     {
         private ushort _RL;
         private ushort _RN;

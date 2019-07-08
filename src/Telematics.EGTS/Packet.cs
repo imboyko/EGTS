@@ -5,30 +5,19 @@ using System.Text;
 
 namespace Telematics.EGTS
 {
-    public class Packet
+    public partial class Packet
     {
-        #region Construstors
+        #region Конструкторы
         /// <summary>
         /// Конструктор пакета указанного типа.
         /// </summary>
         /// <param name="type">Тип пакета.</param>
         public Packet(Types.PacketType type)
         {
+            _PRV = 1;
             _PT = (byte)type;
+            ServiceData = CreateAppDataInstance(type);
 
-            // Инициализируем данные прикладного уровня.
-            switch (type)
-            {
-                case Types.PacketType.EGTS_PT_APPDATA:
-                    _Data = new Types.EGTS_PT_APPDATA();
-                    break;
-                case Types.PacketType.EGTS_PT_RESPONSE:
-                    _Data = new Types.EGTS_PT_RESPONSE();
-                    break;
-                case Types.PacketType.EGTS_PT_SIGNED_APPDATA:
-                    _Data = new Types.EGTS_PT_SIGNED_APPDATA();
-                    break;
-            };
         }
         /// <summary>
         /// Конструктор пакета из двоичных данных.
@@ -53,17 +42,20 @@ namespace Telematics.EGTS
                     _RCA = reader.ReadUInt16();
                     _TTL = reader.ReadByte();
                 }
-                // TODO: Считывание данных прикладного уровня.
-                //if (_FDL > 0)
-                //{
+
+                ServiceData = CreateAppDataInstance(PacketType);
+
+                if (_FDL > 0)
+                {
                 //    _Data = new PacketData(stream);
                 //    _SFRCS = reader.ReadUInt16();
-                //}
+                };
+                
             }
         }
         #endregion
 
-        #region Properties
+        #region Свойства
         /// <summary>
         /// Параметр определяет версию используемой структуры заголовка и должен содержать значение 0x01.
         /// </summary>
@@ -181,9 +173,10 @@ namespace Telematics.EGTS
             get => _TTL;
             set => _TTL = value;
         }
+        public IEgtsAppData ServiceData { get; }
         #endregion
 
-        #region Fields
+        #region Поля
         private byte _PRV;
         private byte _SKID;
         private byte _Flags;
@@ -197,8 +190,23 @@ namespace Telematics.EGTS
         private byte _TTL;
         private byte _HCS;
         private ushort _SFRCS;
+        #endregion
 
-        private readonly Types.IServiceData _Data;
+        #region Служебные методы
+        private static IEgtsAppData CreateAppDataInstance(Types.PacketType type)
+        {
+            switch (type)
+            {
+                case Types.PacketType.EGTS_PT_APPDATA:
+                    return new EgtsAppData();
+                case Types.PacketType.EGTS_PT_RESPONSE:
+                    return new EgtsResponseAppData();
+                case Types.PacketType.EGTS_PT_SIGNED_APPDATA:
+                    return new EgtsSignedAppData();
+                default:
+                    throw new ArgumentException("Неизвестный типа пакета EGTS.", "type");
+            };
+        }
         #endregion
     }
 }
