@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Telematics.EGTS
+﻿namespace Telematics.EGTS
 {
     public partial class EgtsPacket
     {
@@ -22,9 +18,9 @@ namespace Telematics.EGTS
                 get => _RPID;
                 set => _RPID = value;
             }
-            public Types.ProcessingCode ProcessingCode
+            public EgtsProcessingCode ProcessingCode
             {
-                get => (Types.ProcessingCode)_PR;
+                get => (EgtsProcessingCode)_PR;
                 set => _PR = (byte)value;
             }
         }

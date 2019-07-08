@@ -19,7 +19,7 @@ namespace Telematics.EGTS.Types
 
         internal EGTS_SR_RECORD_RESPONSE()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_RECORD_RESPONSE;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_RECORD_RESPONSE;
         }
     }
 
@@ -41,7 +41,7 @@ namespace Telematics.EGTS.Types
 
         internal EGTS_SR_TERM_IDENTITY()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_TERM_IDENTITY;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_TERM_IDENTITY;
         }
     }
     /// <summary>
@@ -62,7 +62,7 @@ namespace Telematics.EGTS.Types
 
         internal EGTS_SR_MODULE_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_MODULE_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_MODULE_DATA;
         }
     }
     /// <summary>
@@ -76,7 +76,7 @@ namespace Telematics.EGTS.Types
 
         internal EGTS_SR_VEHICLE_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_VEHICLE_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_VEHICLE_DATA;
         }
     }
     /// <summary>
@@ -90,7 +90,7 @@ namespace Telematics.EGTS.Types
 
         internal EGTS_SR_DISPATCHER_IDENTITY()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_DISPATCHER_IDENTITY;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_DISPATCHER_IDENTITY;
         }
     }
     /// <summary>
@@ -108,7 +108,7 @@ namespace Telematics.EGTS.Types
 
         internal EGTS_SR_AUTH_PARAMS()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_AUTH_PARAMS;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_AUTH_PARAMS;
         }
     }
     /// <summary>
@@ -122,7 +122,7 @@ namespace Telematics.EGTS.Types
 
         internal EGTS_SR_AUTH_INFO()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_AUTH_INFO;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_AUTH_INFO;
         }
     }
     /// <summary>
@@ -136,7 +136,7 @@ namespace Telematics.EGTS.Types
 
         internal EGTS_SR_SERVICE_INFO()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_SERVICE_INFO;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_SERVICE_INFO;
         }
     }
     /// <summary>
@@ -148,7 +148,7 @@ namespace Telematics.EGTS.Types
 
         internal EGTS_SR_RESULT_CODE()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_RESULT_CODE;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_RESULT_CODE;
         }
     }
     #endregion
@@ -174,7 +174,7 @@ namespace Telematics.EGTS.Types
 
         internal EGTS_SR_POS_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_POS_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_POS_DATA;
         }
     }
     /// <summary>
@@ -191,7 +191,7 @@ namespace Telematics.EGTS.Types
 
         internal EGTS_SR_EXT_POS_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_EXT_POS_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_EXT_POS_DATA;
         }
     }
     /// <summary>
@@ -201,7 +201,7 @@ namespace Telematics.EGTS.Types
     {
         internal EGTS_SR_AD_SENSORS_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_AD_SENSORS_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_AD_SENSORS_DATA;
         }
     }
     /// <summary>
@@ -211,7 +211,7 @@ namespace Telematics.EGTS.Types
     {
         internal EGTS_SR_COUNTERS_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_COUNTERS_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_COUNTERS_DATA;
         }
     }
     /// <summary>
@@ -221,7 +221,7 @@ namespace Telematics.EGTS.Types
     {
         internal EGTS_SR_ACCEL_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_ACCEL_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_ACCEL_DATA;
         }
     }
     /// <summary>
@@ -231,7 +231,7 @@ namespace Telematics.EGTS.Types
     {
         internal EGTS_SR_STATE_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_STATE_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_STATE_DATA;
         }
     }
     /// <summary>
@@ -241,7 +241,7 @@ namespace Telematics.EGTS.Types
     {
         internal EGTS_SR_LOOPIN_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_LOOPIN_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_LOOPIN_DATA;
         }
     }
     /// <summary>
@@ -251,7 +251,7 @@ namespace Telematics.EGTS.Types
     {
         internal EGTS_SR_ABS_DIG_SENS_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_ABS_DIG_SENS_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_ABS_DIG_SENS_DATA;
         }
     }
     /// <summary>
@@ -261,7 +261,7 @@ namespace Telematics.EGTS.Types
     {
         internal EGTS_SR_ABS_AN_SENS_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_ABS_AN_SENS_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_ABS_AN_SENS_DATA;
         }
     }
     /// <summary>
@@ -271,7 +271,7 @@ namespace Telematics.EGTS.Types
     {
         internal EGTS_SR_ABS_CNTR_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_ABS_CNTR_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_ABS_CNTR_DATA;
         }
     }
     /// <summary>
@@ -281,7 +281,7 @@ namespace Telematics.EGTS.Types
     {
         internal EGTS_SR_ABS_LOOPIN_DATA()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_ABS_LOOPIN_DATA;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_ABS_LOOPIN_DATA;
         }
     }
     /// <summary>
@@ -291,7 +291,7 @@ namespace Telematics.EGTS.Types
     {
         internal EGTS_SR_LIQUID_LEVEL_SENSOR()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_LIQUID_LEVEL_SENSOR;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_LIQUID_LEVEL_SENSOR;
         }
     }
     /// <summary>
@@ -301,7 +301,7 @@ namespace Telematics.EGTS.Types
     {
         internal EGTS_SR_PASSENGERS_COUNTERS()
         {
-            _SRT = (byte)SubrecordType.EGTS_SR_PASSENGERS_COUNTERS;
+            _SRT = (byte)EgtsSubrecordType.EGTS_SR_PASSENGERS_COUNTERS;
         }
     }
 

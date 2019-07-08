@@ -8,10 +8,10 @@ namespace Telematics.EGTS.Tests
     {
         #region ctor tests
         [Theory]
-        [InlineData(Types.PacketType.EGTS_PT_APPDATA)]
-        [InlineData(Types.PacketType.EGTS_PT_RESPONSE)]
-        [InlineData(Types.PacketType.EGTS_PT_SIGNED_APPDATA)]
-        public void Should_Pass_ContructorByPacketType(Types.PacketType type)
+        [InlineData(EgtsPacketType.EGTS_PT_APPDATA)]
+        [InlineData(EgtsPacketType.EGTS_PT_RESPONSE)]
+        [InlineData(EgtsPacketType.EGTS_PT_SIGNED_APPDATA)]
+        public void Should_Pass_ContructorByPacketType(EgtsPacketType type)
         {
             var packet = new EgtsPacket(type);
 
@@ -22,13 +22,13 @@ namespace Telematics.EGTS.Tests
             Assert.False(packet.Route);
             Assert.Equal(0, packet.EncryptionAlgorithm);
             Assert.False(packet.Compressed);
-            Assert.Equal(Types.Priority.Highest, packet.Priority);
+            Assert.Equal(EgtsPriority.Highest, packet.Priority);
         }
 
         [Fact]
         public void ConstructorFromStream_Pass__AppDataPacketWithoutRoute()
         {
-            var packetType = Types.PacketType.EGTS_PT_APPDATA;
+            var packetType = EgtsPacketType.EGTS_PT_APPDATA;
             byte prv = 1;
             byte skid = 0;
             byte flags = 0b00000000;
@@ -99,7 +99,7 @@ namespace Telematics.EGTS.Tests
             Assert.False(packet.Route);
             Assert.Equal(0, packet.EncryptionAlgorithm);
             Assert.False(packet.Compressed);
-            Assert.Equal(Types.Priority.Highest, packet.Priority);
+            Assert.Equal(EgtsPriority.Highest, packet.Priority);
 
             // Свойства маршрутизации
             Assert.Equal(0, packet.PeerAddress);
@@ -115,7 +115,7 @@ namespace Telematics.EGTS.Tests
         [InlineData(false)]
         public void Should_Pass_SetRouteValue(bool value)
         {
-            var packetType = Types.PacketType.EGTS_PT_APPDATA;
+            var packetType = EgtsPacketType.EGTS_PT_APPDATA;
             var packet = new EgtsPacket(packetType)
             {
                 Route = value
@@ -126,17 +126,17 @@ namespace Telematics.EGTS.Tests
             Assert.Equal(value, packet.Route);
             Assert.Equal(0, packet.EncryptionAlgorithm);
             Assert.False(packet.Compressed);
-            Assert.Equal(Types.Priority.Highest, packet.Priority);
+            Assert.Equal(EgtsPriority.Highest, packet.Priority);
         }
 
         [Theory]
-        [InlineData(Types.Priority.Highest)]
-        [InlineData(Types.Priority.High)]
-        [InlineData(Types.Priority.Normal)]
-        [InlineData(Types.Priority.Low)]
-        public void Should_Pass_SetPriorityValue(Types.Priority value)
+        [InlineData(EgtsPriority.Highest)]
+        [InlineData(EgtsPriority.High)]
+        [InlineData(EgtsPriority.Normal)]
+        [InlineData(EgtsPriority.Low)]
+        public void Should_Pass_SetPriorityValue(EgtsPriority value)
         {
-            var packetType = Types.PacketType.EGTS_PT_APPDATA;
+            var packetType = EgtsPacketType.EGTS_PT_APPDATA;
             var packet = new EgtsPacket(packetType)
             {
                 Priority = value

@@ -12,7 +12,7 @@ namespace Telematics.EGTS
         /// Конструктор пакета указанного типа.
         /// </summary>
         /// <param name="type">Тип пакета.</param>
-        public EgtsPacket(Types.PacketType type)
+        public EgtsPacket(EgtsPacketType type)
         {
             _PRV = 1;
             _PT = (byte)type;
@@ -122,11 +122,11 @@ namespace Telematics.EGTS
         }
         /// <summary>
         /// Определяет приоритет маршрутизации данного пакета. 
-        /// <seealso cref="Types.Priority"/>
+        /// <seealso cref="EgtsPriority"/>
         /// </summary>
-        public Types.Priority Priority
+        public EgtsPriority Priority
         {
-            get => (Types.Priority)(_Flags & 0b00000011);
+            get => (EgtsPriority)(_Flags & 0b00000011);
             set => _Flags = (byte)((byte)value | (_Flags & 0b00000011));
         }
         /// <summary>
@@ -141,9 +141,9 @@ namespace Telematics.EGTS
         /// Тип пакета Транспортного Уровня.
         /// <seealso cref="Types.PacketType"/>
         /// </summary>
-        public Types.PacketType PacketType
+        public EgtsPacketType PacketType
         {
-            get => (Types.PacketType)_PT;
+            get => (EgtsPacketType)_PT;
         }
         /// <summary>
         /// Адрес ТП, на которой данный пакет сгенерирован.
@@ -193,15 +193,15 @@ namespace Telematics.EGTS
         #endregion
 
         #region Служебные методы
-        private static IEgtsAppData CreateAppDataInstance(Types.PacketType type)
+        private static IEgtsAppData CreateAppDataInstance(EgtsPacketType type)
         {
             switch (type)
             {
-                case Types.PacketType.EGTS_PT_APPDATA:
+                case EgtsPacketType.EGTS_PT_APPDATA:
                     return new EgtsAppData();
-                case Types.PacketType.EGTS_PT_RESPONSE:
+                case EgtsPacketType.EGTS_PT_RESPONSE:
                     return new EgtsResponseAppData();
-                case Types.PacketType.EGTS_PT_SIGNED_APPDATA:
+                case EgtsPacketType.EGTS_PT_SIGNED_APPDATA:
                     return new EgtsSignedAppData();
                 default:
                     throw new ArgumentException("Неизвестный типа пакета EGTS.", "type");

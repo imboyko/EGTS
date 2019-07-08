@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Telematics.EGTS
+﻿namespace Telematics.EGTS
 {
     public partial class EgtsPacket
     {
