@@ -1,16 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Telematics.EGTS
 {
-    public partial class EgtsPacket
+    public class EgtsPacket
     {
         #region Конструкторы
-        /// <summary>
-        /// Конструктор пакета указанного типа.
-        /// </summary>
+        /// <summary>Конструктор пакета указанного типа.</summary>
         /// <param name="type">Тип пакета.</param>
         public EgtsPacket(EgtsPacketType type)
         {
@@ -19,9 +15,7 @@ namespace Telematics.EGTS
             ServiceData = CreateAppDataInstance(type);
 
         }
-        /// <summary>
-        /// Конструктор пакета из двоичных данных.
-        /// </summary>
+        /// <summary>Конструктор пакета из двоичных данных.</summary>
         /// <param name="stream">Двоичные данные пакета</param>
         public EgtsPacket(Stream stream)
         {
@@ -47,34 +41,33 @@ namespace Telematics.EGTS
 
                 if (_FDL > 0)
                 {
-                //    _Data = new PacketData(stream);
-                //    _SFRCS = reader.ReadUInt16();
+                    //    _Data = new PacketData(stream);
+                    //    _SFRCS = reader.ReadUInt16();
                 };
-                
+
             }
         }
         #endregion
 
         #region Свойства
-        /// <summary>
-        /// Параметр определяет версию используемой структуры заголовка и должен содержать значение 0x01.
-        /// </summary>
+        /// <summary>Параметр определяет версию используемой структуры заголовка.</summary>
+        /// <value>Версия используемого протокола.</value>
+        /// <remarks>Должен содержать значение 1</remarks>
         public byte ProtocolVersion
         {
             get => _PRV;
             set => _PRV = value;
         }
-        /// <summary>
-        /// Параметр определяет идентификатор ключа, используемый при шифровании.
-        /// </summary>
+        /// <summary>Параметр определяет идентификатор ключа, используемый при шифровании.</summary>
         public byte SecurityKeyId
         {
             get => _SKID;
             set => _SKID = value;
         }
-        /// <summary>
-        /// Данный параметр определяет префикс заголовка Транспортного Уровня и для данной версии протокола должен содержать значение 0.
-        /// </summary>
+        /// <summary>Данный параметр определяет префикс заголовка Транспортного Уровня</summary>
+        /// <value>The prefix.</value>
+        /// <exception cref="ArgumentOutOfRangeException">value - Для данной версии протокола префикс должен иметь значение 0</exception>
+        /// <remarks>Для данной версии протокола должен содержать значение 0.</remarks>
         public byte Prefix
         {
             get => (byte)((_Flags & 0b11000000) >> 6);
@@ -94,11 +87,11 @@ namespace Telematics.EGTS
             get => (_Flags & 0b00100000) == 0b00100000;
             set => _Flags = (byte)((value ? 0b00100000 : 0) | (_Flags & 0b11011111));
         }
-        /// <summary>
-        /// Битовое поле определяет код алгоритма, используемый для шифрования данных из поля SFRD. 
-        /// Если поле имеет значение 0  то данные в поле SFRD не шифруются.
-        /// Состав и коды алгоритмов не определены в данной версии Протокола
-        /// </summary>
+        /// <summary>Битовое поле определяет код алгоритма, используемый для шифрования данных из поля SFRD.
+        /// Если поле имеет значение 0  то данные в поле SFRD не шифруются.</summary>
+        /// <value>The encryption algorithm.</value>
+        /// <exception cref="ArgumentOutOfRangeException">value - Допустимы значения 0 - 3</exception>
+        /// <remarks>Состав и коды алгоритмов не определены в данной версии Протокола</remarks>
         public byte EncryptionAlgorithm
         {
             get => (byte)((_Flags & 0b00011000) >> 3);
@@ -110,54 +103,44 @@ namespace Telematics.EGTS
                     _Flags = (byte)((value << 3) | (_Flags & 0b00011000));
             }
         }
-        /// <summary>
-        /// Определяет, используется ли сжатие данных из поля SFRD. 
-        /// Если поле имеет значение 1, то данные в поле SFRD считаются сжатыми.  
-        /// Алгоритм сжатия не определен в данной версии Протокола.
-        /// </summary>
+        /// <summary>Определяет, используется ли сжатие данных из поля SFRD.
+        /// Если поле имеет значение 1, то данные в поле SFRD считаются сжатыми.</summary>
+        /// <remarks>Алгоритм сжатия не определен в данной версии Протокола.</remarks>
         public bool Compressed
         {
             get => (_Flags & 0b00000100) == 0b00000100;
             private set => _Flags = (byte)((value ? 0b000000100 : 0) | (_Flags & 0b11111011));
         }
-        /// <summary>
-        /// Определяет приоритет маршрутизации данного пакета. 
-        /// <seealso cref="EgtsPriority"/>
-        /// </summary>
+        /// <summary>Определяет приоритет маршрутизации данного пакета.
+        /// <seealso cref="EgtsPriority"/></summary>
+        /// <value>The priority.</value>
         public EgtsPriority Priority
         {
             get => (EgtsPriority)(_Flags & 0b00000011);
             set => _Flags = (byte)((byte)value | (_Flags & 0b00000011));
         }
-        /// <summary>
-        /// Содержит номер пакета Транспортного Уровня.
-        /// </summary>
+        /// <summary>Содержит номер пакета Транспортного Уровня.</summary>
+        /// <value>The packet identifier.</value>
         public ushort PacketIdentifier
         {
             get => _PID;
             set => _PID = value;
         }
-        /// <summary>
-        /// Тип пакета Транспортного Уровня.
-        /// <seealso cref="Types.PacketType"/>
-        /// </summary>
+        /// <summary>Тип пакета Транспортного Уровня.
+        /// <seealso cref="Types.PacketType"/></summary>
         public EgtsPacketType PacketType
         {
             get => (EgtsPacketType)_PT;
         }
-        /// <summary>
-        /// Адрес ТП, на которой данный пакет сгенерирован.
-        /// Данный адрес является уникальным в рамках связной сети и используется для создания пакета-подтверждения на принимающей стороне.
-        /// </summary>
+        /// <summary>Адрес ТП, на которой данный пакет сгенерирован.</summary>
+        /// <remarks>Данный адрес является уникальным в рамках связной сети и используется для создания пакета-подтверждения на принимающей стороне.</remarks>
         public ushort PeerAddress
         {
             get => _PRA;
             set => _PRA = value;
         }
-        /// <summary>
-        /// Адрес ТП, для которой данный пакет предназначен.
-        /// По данному адресу производится идентификация принадлежности пакета определённой ТП и его маршрутизация при использовании промежуточных ТП.
-        /// </summary>
+        /// <summary>Адрес ТП, для которой данный пакет предназначен.</summary>
+        /// <remarks>По данному адресу производится идентификация принадлежности пакета определённой ТП и его маршрутизация при использовании промежуточных ТП.</remarks>
         public ushort RecipientAddress
         {
             get => _RCA;
