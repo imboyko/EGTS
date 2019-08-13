@@ -9,7 +9,13 @@ namespace Telematics.EGTS
     /// </summary>
     public class EgtsAppData : IEgtsAppData
     {
+        internal EgtsAppData(EgtsPacket egtsPacket)
+        {
+            this._EgtsPacket = egtsPacket;
+        }
+
         protected readonly List<EgtsDataRecord> _Records;
+        protected readonly EgtsPacket _EgtsPacket;
 
         #region Реализация ICollection<DataRecord>
         public int Count => _Records.Count;
@@ -52,10 +58,14 @@ namespace Telematics.EGTS
         }
         #endregion
 
-        internal EgtsAppData()
+        /// <summary>Создает запись уровня поддержки услуг и добавляет ее в список записей.</summary>
+        /// <returns>Запись уровня поддержки услуг.</returns>
+        public EgtsDataRecord Add()
         {
-
+            var item = new EgtsDataRecord(_EgtsPacket);
+            return item;
         }
+        
     }
 
 }

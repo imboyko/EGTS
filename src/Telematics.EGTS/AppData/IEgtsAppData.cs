@@ -2,6 +2,9 @@
 
 namespace Telematics.EGTS
 {
-    public interface IEgtsAppData : ICollection<EgtsDataRecord> { }
+    public interface IEgtsAppData : ICollection<EgtsDataRecord>
+    {
+        EgtsDataRecord Add();
+    }
 
 }
