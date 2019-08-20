@@ -3,53 +3,44 @@ using System.IO;
 
 namespace Telematics.EGTS
 {
-    public class EgtsPacket
+    public sealed class EgtsPacket
     {
-        #region Конструкторы
         /// <summary>Конструктор пакета указанного типа.</summary>
-        /// <param name="type">Тип пакета.</param>
-        public EgtsPacket(EgtsPacketType type)
+        /// <param name="packetType">Тип пакета.</param>
+        public EgtsPacket(EgtsPacketType packetType)
         {
             _PRV = 1;
-            _PT = (byte)type;
-            ServiceData = CreateAppDataInstance(type);
+            _PT = (byte)packetType;
 
+            switch (packetType)
+            {
+                case EgtsPacketType.EGTS_PT_APPDATA:
+                    ServiceData = new EgtsAppData(this);
+                    break;
+                case EgtsPacketType.EGTS_PT_RESPONSE:
+                    ServiceData = new EgtsResponseAppData(this);
+                    break;
+                case EgtsPacketType.EGTS_PT_SIGNED_APPDATA:
+                    ServiceData = new EgtsSignedAppData(this);
+                    break;
+            };
         }
         /// <summary>Конструктор пакета из двоичных данных.</summary>
         /// <param name="stream">Двоичные данные пакета</param>
         public EgtsPacket(Stream stream)
         {
-            using (var reader = new BinaryReader(stream))
+            ReadObject(stream);
+        }
+        /// <summary>Конструктор пакета из двоичных данных.</summary>
+        /// <param name="buffer">Двоичные данные пакета</param>
+        public EgtsPacket(byte[] buffer)
+        {
+            using(var stream = new MemoryStream(buffer))
             {
-                _PRV = reader.ReadByte();
-                _SKID = reader.ReadByte();
-                _Flags = reader.ReadByte();
-                _HL = reader.ReadByte();
-                _HE = reader.ReadByte();
-                _FDL = reader.ReadUInt16();
-                _PID = reader.ReadUInt16();
-                _PT = reader.ReadByte();
-                // Если Route, то считываем опциональные поля.
-                if (Route)
-                {
-                    _PRA = reader.ReadUInt16();
-                    _RCA = reader.ReadUInt16();
-                    _TTL = reader.ReadByte();
-                }
-
-                ServiceData = CreateAppDataInstance(PacketType);
-
-                if (_FDL > 0)
-                {
-                    //    _Data = new PacketData(stream);
-                    //    _SFRCS = reader.ReadUInt16();
-                };
-
+                ReadObject(stream);
             }
         }
-        #endregion
-
-        #region Свойства
+        
         /// <summary>Параметр определяет версию используемой структуры заголовка.</summary>
         /// <value>Версия используемого протокола.</value>
         /// <remarks>Должен содержать значение 1</remarks>
@@ -156,10 +147,20 @@ namespace Telematics.EGTS
             get => _TTL;
             set => _TTL = value;
         }
-        public IEgtsAppData ServiceData { get; }
-        #endregion
+        public IEgtsAppData ServiceData { get; private set; }
 
-        #region Поля
+        public void ReadObject(Stream stream)
+        {
+            // Чтение заголовка и контрольных сумм.
+            ReadHeader(stream);
+
+            // TODO Валидация пакета
+
+            // Чтения данных
+            ReadData(stream);
+        }
+
+        #region Потроха класса
         private byte _PRV;
         private byte _SKID;
         private byte _Flags;
@@ -167,28 +168,60 @@ namespace Telematics.EGTS
         private byte _HE;
         private ushort _FDL;
         private ushort _PID;
-        private readonly byte _PT;
+        private byte _PT;
         private ushort _PRA;
         private ushort _RCA;
         private byte _TTL;
         private byte _HCS;
         private ushort _SFRCS;
-        #endregion
 
-        #region Служебные методы
-        private static IEgtsAppData CreateAppDataInstance(EgtsPacketType type)
+        private void ReadHeader(Stream stream)
         {
-            switch (type)
+            using (var reader = new BinaryReader(stream, System.Text.Encoding.UTF8, true))
+            {
+                _PRV = reader.ReadByte();
+                _SKID = reader.ReadByte();
+                _Flags = reader.ReadByte();
+                _HL = reader.ReadByte();
+                _HE = reader.ReadByte();
+                _FDL = reader.ReadUInt16();
+                _PID = reader.ReadUInt16();
+                _PT = reader.ReadByte();
+                
+                // Если Route, то считываем опциональные поля.
+                if (Route)
+                {
+                    _PRA = reader.ReadUInt16();
+                    _RCA = reader.ReadUInt16();
+                    _TTL = reader.ReadByte();
+                }
+
+                // Если есть данные уровня услуг, то считываем их CRC
+                if (_FDL > 0)
+                {
+                    // Смещаем позицию в потоке на FDL
+                    stream.Seek(_FDL, SeekOrigin.Current);
+                    // Считываем CRC
+                    _SFRCS = reader.ReadUInt16();
+                    // Возврашаем позицию в потоке на конец данных транспортного уровня
+                    stream.Seek(_HL, SeekOrigin.Begin);
+                };
+            }
+        }
+        private void ReadData(Stream stream)
+        {
+            switch (PacketType)
             {
                 case EgtsPacketType.EGTS_PT_APPDATA:
-                    return new EgtsAppData();
-                case EgtsPacketType.EGTS_PT_RESPONSE:
-                    return new EgtsResponseAppData();
+                    ServiceData = new EgtsAppData(this, stream);
+                    break;
                 case EgtsPacketType.EGTS_PT_SIGNED_APPDATA:
-                    return new EgtsSignedAppData();
-                default:
-                    throw new ArgumentException("Неизвестный типа пакета EGTS.", "type");
-            };
+                    ServiceData = new EgtsSignedAppData(this, stream);
+                    break;
+                case EgtsPacketType.EGTS_PT_RESPONSE:
+                    ServiceData = new EgtsResponseAppData(this, stream);
+                    break;
+            }
         }
         #endregion
     }
